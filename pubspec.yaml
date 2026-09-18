@@ -1,0 +1,29 @@
+name: pet_shop_web
+description: Зоомагазин Flutter Web + PocketBase
+publish_to: "none"
+
+version: 2.0.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_web_plugins:
+    sdk: flutter
+
+  go_router: ^17.5.0
+  provider: ^6.1.5
+  shared_preferences: ^2.5.5
+  pocketbase: ^0.25.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
