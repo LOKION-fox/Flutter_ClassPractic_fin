@@ -197,12 +197,12 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
             sortField: 'id',
             numeric: true,
             build: (supplier) {
-              return Text(
-                supplier.id,
-              );
-            },
-          ),
-        ],
+                return Text(
+                  supplier.id,
+                );
+              },
+            ),
+          ],
         actions: (supplier) {
           return [
             IconButton(
