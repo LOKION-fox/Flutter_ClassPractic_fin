@@ -16,10 +16,7 @@ import '../widgets/multi_select_field.dart';
 class AnimalFormScreen extends StatefulWidget {
   final String? id;
 
-  const AnimalFormScreen({
-    super.key,
-    this.id,
-  });
+  const AnimalFormScreen({super.key, this.id});
 
   bool get isEditing => id != null;
 
@@ -86,9 +83,7 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
       Animal? animal;
 
       if (widget.id != null) {
-        animal = await animalNotifier.findById(
-          widget.id!,
-        );
+        animal = await animalNotifier.findById(widget.id!);
       }
 
       if (!mounted) {
@@ -119,9 +114,7 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
 
           _supplierId = animal.supplierId;
 
-          _categoryIds = [
-            ...animal.categoryIds,
-          ];
+          _categoryIds = [...animal.categoryIds];
         }
 
         _loading = false;
@@ -155,25 +148,17 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
       return [];
     }
 
-    return _categories.where(
-      (category) {
-        return (category.kind == 'animal' || category.kind == 'both') &&
-            supplier.allowedCategoryIds.contains(
-              category.id,
-            );
-      },
-    ).toList();
+    return _categories.where((category) {
+      return (category.kind == 'animal' || category.kind == 'both') &&
+          supplier.allowedCategoryIds.contains(category.id);
+    }).toList();
   }
 
-  void _changed(
-    String field,
-  ) {
+  void _changed(String field) {
     setState(() {
       _dirty = true;
 
-      _serverErrors.remove(
-        field,
-      );
+      _serverErrors.remove(field);
     });
   }
 
@@ -194,13 +179,9 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
       ageMonths: int.parse(_age.text),
       sex: _sex!,
       country: _country.text.trim(),
-      price: double.parse(
-        _price.text.replaceAll(',', '.'),
-      ),
+      price: double.parse(_price.text.replaceAll(',', '.')),
       supplierId: _supplierId!,
-      categoryIds: [
-        ..._categoryIds,
-      ],
+      categoryIds: [..._categoryIds],
       description: _description.text.trim(),
       deletedAt: _original?.deletedAt,
     );
@@ -209,13 +190,9 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
       final notifier = context.read<AnimalListNotifier>();
 
       if (widget.isEditing) {
-        await notifier.update(
-          animal,
-        );
+        await notifier.update(animal);
       } else {
-        await notifier.create(
-          animal,
-        );
+        await notifier.create(animal);
       }
 
       _dirty = false;
@@ -259,35 +236,17 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     if (_loading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (_loadError != null) {
-      return Scaffold(
-        body: Center(
-          child: Text(
-            _loadError!,
-          ),
-        ),
-      );
+      return Scaffold(body: Center(child: Text(_loadError!)));
     }
 
     if (widget.isEditing && _original == null) {
-      return const Scaffold(
-        body: Center(
-          child: Text(
-            'Животное не найдено',
-          ),
-        ),
-      );
+      return const Scaffold(body: Center(child: Text('Животное не найдено')));
     }
 
     return EntityFormScaffold(
@@ -308,11 +267,7 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
           },
           validator: (value) =>
               _serverErrors['name'] ??
-              Validators.requiredAndMax(
-                value,
-                80,
-                field: 'Имя',
-              ),
+              Validators.requiredAndMax(value, 80, field: 'Имя'),
         ),
         const SizedBox(height: 14),
         DropdownButtonFormField<String>(
@@ -323,31 +278,14 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
             border: OutlineInputBorder(),
           ),
           items: const [
-            DropdownMenuItem(
-              value: 'Кошка',
-              child: Text('Кошка'),
-            ),
-            DropdownMenuItem(
-              value: 'Собака',
-              child: Text('Собака'),
-            ),
-            DropdownMenuItem(
-              value: 'Хомяк',
-              child: Text('Хомяк'),
-            ),
-            DropdownMenuItem(
-              value: 'Попугай',
-              child: Text('Попугай'),
-            ),
-            DropdownMenuItem(
-              value: 'Кролик',
-              child: Text('Кролик'),
-            ),
+            DropdownMenuItem(value: 'Кошка', child: Text('Кошка')),
+            DropdownMenuItem(value: 'Собака', child: Text('Собака')),
+            DropdownMenuItem(value: 'Хомяк', child: Text('Хомяк')),
+            DropdownMenuItem(value: 'Попугай', child: Text('Попугай')),
+            DropdownMenuItem(value: 'Кролик', child: Text('Кролик')),
             DropdownMenuItem(
               value: 'Морская свинка',
-              child: Text(
-                'Морская свинка',
-              ),
+              child: Text('Морская свинка'),
             ),
           ],
           validator: (value) =>
@@ -358,9 +296,7 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
               _species = value;
               _dirty = true;
 
-              _serverErrors.remove(
-                'species',
-              );
+              _serverErrors.remove('species');
             });
           },
         ),
@@ -376,11 +312,7 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
           },
           validator: (value) =>
               _serverErrors['breed'] ??
-              Validators.requiredAndMax(
-                value,
-                100,
-                field: 'Порода',
-              ),
+              Validators.requiredAndMax(value, 100, field: 'Порода'),
         ),
         const SizedBox(height: 14),
         TextFormField(
@@ -391,9 +323,7 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
             border: OutlineInputBorder(),
           ),
           onChanged: (_) {
-            _changed(
-              'ageMonths',
-            );
+            _changed('ageMonths');
           },
           validator: (value) =>
               _serverErrors['ageMonths'] ??
@@ -412,14 +342,8 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
             border: OutlineInputBorder(),
           ),
           items: const [
-            DropdownMenuItem(
-              value: 'Самец',
-              child: Text('Самец'),
-            ),
-            DropdownMenuItem(
-              value: 'Самка',
-              child: Text('Самка'),
-            ),
+            DropdownMenuItem(value: 'Самец', child: Text('Самец')),
+            DropdownMenuItem(value: 'Самка', child: Text('Самка')),
           ],
           validator: (value) =>
               _serverErrors['sex'] ?? (value == null ? 'Выберите пол' : null),
@@ -428,9 +352,7 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
               _sex = value;
               _dirty = true;
 
-              _serverErrors.remove(
-                'sex',
-              );
+              _serverErrors.remove('sex');
             });
           },
         ),
@@ -446,11 +368,7 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
           },
           validator: (value) =>
               _serverErrors['country'] ??
-              Validators.requiredAndMax(
-                value,
-                60,
-                field: 'Страна',
-              ),
+              Validators.requiredAndMax(value, 60, field: 'Страна'),
         ),
         const SizedBox(height: 14),
         DropdownButtonFormField<String>(
@@ -464,37 +382,26 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
               .map(
                 (supplier) => DropdownMenuItem(
                   value: supplier.id,
-                  child: Text(
-                    supplier.name,
-                  ),
+                  child: Text(supplier.name),
                 ),
               )
               .toList(),
           validator: (value) =>
               _serverErrors['supplierId'] ??
-              Validators.requiredId(
-                value,
-                field: 'поставщика',
-              ),
+              Validators.requiredId(value, field: 'поставщика'),
           onChanged: (value) {
             setState(() {
               _supplierId = value;
 
-              _serverErrors.remove(
-                'supplierId',
-              );
+              _serverErrors.remove('supplierId');
 
-              _serverErrors.remove(
-                'categoryIds',
-              );
+              _serverErrors.remove('categoryIds');
 
               final supplier = _supplier;
 
               if (supplier != null) {
                 _categoryIds = _categoryIds
-                    .where(
-                      supplier.allowedCategoryIds.contains,
-                    )
+                    .where(supplier.allowedCategoryIds.contains)
                     .toList();
               }
 
@@ -511,17 +418,12 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
           labelOf: (item) => item.name,
           validator: (value) =>
               _serverErrors['categoryIds'] ??
-              Validators.requiredIds(
-                value,
-                field: 'категории',
-              ),
+              Validators.requiredIds(value, field: 'категории'),
           onChanged: (value) {
             setState(() {
               _categoryIds = value;
 
-              _serverErrors.remove(
-                'categoryIds',
-              );
+              _serverErrors.remove('categoryIds');
 
               _dirty = true;
             });
@@ -556,15 +458,10 @@ class _AnimalFormScreenState extends State<AnimalFormScreen> {
             border: OutlineInputBorder(),
           ),
           onChanged: (_) {
-            _changed(
-              'description',
-            );
+            _changed('description');
           },
-          validator: (value) => Validators.requiredAndMax(
-            value,
-            500,
-            field: 'Описание',
-          ),
+          validator: (value) =>
+              Validators.requiredAndMax(value, 500, field: 'Описание'),
         ),
       ],
     );

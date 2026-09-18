@@ -7,11 +7,7 @@ String jsonString(
   return value == null ? fallback : value.toString();
 }
 
-int jsonInt(
-  Map<String, dynamic> json,
-  String key, {
-  int fallback = 0,
-}) {
+int jsonInt(Map<String, dynamic> json, String key, {int fallback = 0}) {
   final value = json[key];
 
   if (value is int) return value;
@@ -33,10 +29,7 @@ double jsonDouble(
   return double.tryParse(value?.toString() ?? '') ?? fallback;
 }
 
-List<String> jsonStringList(
-  Map<String, dynamic> json,
-  String key,
-) {
+List<String> jsonStringList(Map<String, dynamic> json, String key) {
   final value = json[key];
 
   if (value is! List) {
@@ -50,10 +43,7 @@ List<String> jsonStringList(
       .toList();
 }
 
-DateTime? jsonDate(
-  Map<String, dynamic> json,
-  String key,
-) {
+DateTime? jsonDate(Map<String, dynamic> json, String key) {
   final value = json[key];
 
   if (value == null || value.toString().trim().isEmpty) {

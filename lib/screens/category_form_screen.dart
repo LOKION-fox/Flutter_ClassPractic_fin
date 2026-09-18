@@ -11,10 +11,7 @@ import '../widgets/entity_form_scaffold.dart';
 class CategoryFormScreen extends StatefulWidget {
   final String? id;
 
-  const CategoryFormScreen({
-    super.key,
-    this.id,
-  });
+  const CategoryFormScreen({super.key, this.id});
 
   bool get isEditing => id != null;
 
@@ -59,8 +56,9 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
     }
 
     try {
-      final value =
-          await context.read<CategoryListNotifier>().findById(widget.id!);
+      final value = await context.read<CategoryListNotifier>().findById(
+        widget.id!,
+      );
 
       if (!mounted) {
         return;
@@ -88,23 +86,15 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
         _loading = false;
       });
 
-      await messageDialog(
-        context,
-        title: 'Ошибка',
-        message: e.toString(),
-      );
+      await messageDialog(context, title: 'Ошибка', message: e.toString());
     }
   }
 
-  void _changed(
-    String field,
-  ) {
+  void _changed(String field) {
     setState(() {
       _dirty = true;
 
-      _serverErrors.remove(
-        field,
-      );
+      _serverErrors.remove(field);
     });
   }
 
@@ -129,13 +119,9 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
       final notifier = context.read<CategoryListNotifier>();
 
       if (widget.isEditing) {
-        await notifier.update(
-          category,
-        );
+        await notifier.update(category);
       } else {
-        await notifier.create(
-          category,
-        );
+        await notifier.create(category);
       }
 
       _dirty = false;
@@ -175,15 +161,9 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     if (_loading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return EntityFormScaffold(
@@ -204,11 +184,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
           },
           validator: (value) =>
               _serverErrors['name'] ??
-              Validators.requiredAndMax(
-                value,
-                80,
-                field: 'Название',
-              ),
+              Validators.requiredAndMax(value, 80, field: 'Название'),
         ),
         const SizedBox(height: 14),
         DropdownButtonFormField<String>(
@@ -218,22 +194,9 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
             border: OutlineInputBorder(),
           ),
           items: const [
-            DropdownMenuItem(
-              value: 'product',
-              child: Text(
-                'Для товаров',
-              ),
-            ),
-            DropdownMenuItem(
-              value: 'animal',
-              child: Text(
-                'Для животных',
-              ),
-            ),
-            DropdownMenuItem(
-              value: 'both',
-              child: Text('Общая'),
-            ),
+            DropdownMenuItem(value: 'product', child: Text('Для товаров')),
+            DropdownMenuItem(value: 'animal', child: Text('Для животных')),
+            DropdownMenuItem(value: 'both', child: Text('Общая')),
           ],
           validator: (value) =>
               _serverErrors['kind'] ?? (value == null ? 'Выберите тип' : null),
@@ -242,9 +205,7 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
               _kind = value;
               _dirty = true;
 
-              _serverErrors.remove(
-                'kind',
-              );
+              _serverErrors.remove('kind');
             });
           },
         ),
@@ -257,15 +218,10 @@ class _CategoryFormScreenState extends State<CategoryFormScreen> {
             border: OutlineInputBorder(),
           ),
           onChanged: (_) {
-            _changed(
-              'description',
-            );
+            _changed('description');
           },
-          validator: (value) => Validators.requiredAndMax(
-            value,
-            300,
-            field: 'Описание',
-          ),
+          validator: (value) =>
+              Validators.requiredAndMax(value, 300, field: 'Описание'),
         ),
       ],
     );

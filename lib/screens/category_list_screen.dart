@@ -170,7 +170,7 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
           numeric: true,
           build: (category) {
             return Text(
-              '${category.id}',
+              category.id,
             );
           },
         ),

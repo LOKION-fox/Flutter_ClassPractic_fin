@@ -26,9 +26,7 @@ class PageResult<T> {
 
   factory PageResult.fromJson(
     Map<String, dynamic> json,
-    T Function(
-      Map<String, dynamic>,
-    ) fromJson,
+    T Function(Map<String, dynamic>) fromJson,
   ) {
     final rawItems = json['items'];
 
@@ -37,11 +35,7 @@ class PageResult<T> {
     if (rawItems is List) {
       for (final item in rawItems) {
         if (item is Map) {
-          items.add(
-            fromJson(
-              Map<String, dynamic>.from(item),
-            ),
-          );
+          items.add(fromJson(Map<String, dynamic>.from(item)));
         }
       }
     }
@@ -54,9 +48,5 @@ class PageResult<T> {
     );
   }
 
-  PageResult.empty({
-    this.size = 10,
-  })  : items = <T>[],
-        page = 1,
-        total = 0;
+  PageResult.empty({this.size = 10}) : items = <T>[], page = 1, total = 0;
 }

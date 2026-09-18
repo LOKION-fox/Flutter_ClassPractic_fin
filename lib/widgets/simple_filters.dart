@@ -36,15 +36,11 @@ class _SimpleFiltersState extends State<SimpleFilters> {
   void initState() {
     super.initState();
 
-    _searchController = TextEditingController(
-      text: widget.query.search,
-    );
+    _searchController = TextEditingController(text: widget.query.search);
   }
 
   @override
-  void didUpdateWidget(
-    SimpleFilters oldWidget,
-  ) {
+  void didUpdateWidget(SimpleFilters oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (_searchController.text != widget.query.search) {
@@ -63,18 +59,9 @@ class _SimpleFiltersState extends State<SimpleFilters> {
   void _search(String value) {
     _timer?.cancel();
 
-    _timer = Timer(
-      const Duration(
-        milliseconds: 350,
-      ),
-      () {
-        widget.onChanged(
-          widget.query.copyWith(
-            search: value,
-          ),
-        );
-      },
-    );
+    _timer = Timer(const Duration(milliseconds: 350), () {
+      widget.onChanged(widget.query.copyWith(search: value));
+    });
   }
 
   @override
@@ -88,9 +75,7 @@ class _SimpleFiltersState extends State<SimpleFilters> {
               controller: _searchController,
               decoration: InputDecoration(
                 labelText: widget.searchLabel,
-                prefixIcon: const Icon(
-                  Icons.search,
-                ),
+                prefixIcon: const Icon(Icons.search),
                 border: const OutlineInputBorder(),
               ),
               onChanged: _search,
@@ -115,23 +100,15 @@ class _SimpleFiltersState extends State<SimpleFilters> {
                         value: null,
                         child: Text('Все'),
                       ),
-                      ...widget.filterOptions.entries.map(
-                        (entry) {
-                          return DropdownMenuItem<String>(
-                            value: entry.key,
-                            child: Text(
-                              entry.value,
-                            ),
-                          );
-                        },
-                      ),
+                      ...widget.filterOptions.entries.map((entry) {
+                        return DropdownMenuItem<String>(
+                          value: entry.key,
+                          child: Text(entry.value),
+                        );
+                      }),
                     ],
                     onChanged: (value) {
-                      widget.onChanged(
-                        widget.query.copyWith(
-                          filter: value,
-                        ),
-                      );
+                      widget.onChanged(widget.query.copyWith(filter: value));
                     },
                   ),
                 ),
@@ -142,31 +119,19 @@ class _SimpleFiltersState extends State<SimpleFilters> {
                       value: widget.query.includeDeleted,
                       onChanged: (value) {
                         widget.onChanged(
-                          widget.query.copyWith(
-                            includeDeleted: value,
-                          ),
+                          widget.query.copyWith(includeDeleted: value),
                         );
                       },
                     ),
-                    const Text(
-                      'Показывать удалённые',
-                    ),
+                    const Text('Показывать удалённые'),
                   ],
                 ),
                 TextButton.icon(
                   onPressed: () {
-                    widget.onChanged(
-                      SimpleQuery(
-                        size: widget.query.size,
-                      ),
-                    );
+                    widget.onChanged(SimpleQuery(size: widget.query.size));
                   },
-                  icon: const Icon(
-                    Icons.clear,
-                  ),
-                  label: const Text(
-                    'Сбросить',
-                  ),
+                  icon: const Icon(Icons.clear),
+                  label: const Text('Сбросить'),
                 ),
               ],
             ),

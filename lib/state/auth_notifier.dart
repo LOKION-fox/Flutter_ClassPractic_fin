@@ -32,10 +32,7 @@ class AuthNotifier extends ChangeNotifier {
   Future<bool>? _refreshFuture;
   DateTime? _lastActivitySavedAt;
 
-  AuthNotifier(
-    this._prefs,
-    this._api,
-  );
+  AuthNotifier(this._prefs, this._api);
 
   AppUser? get user => _user;
   AppRole? get uiRole => _uiRole;
@@ -72,9 +69,7 @@ class AuthNotifier extends ChangeNotifier {
     if (cachedUser != null) {
       try {
         _user = AppUser.fromJson(
-          Map<String, dynamic>.from(
-            jsonDecode(cachedUser) as Map,
-          ),
+          Map<String, dynamic>.from(jsonDecode(cachedUser) as Map),
         );
       } catch (_) {
         _user = _api.currentUser;
@@ -150,10 +145,7 @@ class AuthNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> login(
-    String username,
-    String password,
-  ) async {
+  Future<void> login(String username, String password) async {
     final user = await _api.login(username, password);
     await _applyNewLogin(user);
   }
@@ -268,10 +260,7 @@ class AuthNotifier extends ChangeNotifier {
       return;
     }
 
-    await _prefs.setString(
-      _userKey,
-      jsonEncode(value.toJson()),
-    );
+    await _prefs.setString(_userKey, jsonEncode(value.toJson()));
   }
 
   void recordActivity() {

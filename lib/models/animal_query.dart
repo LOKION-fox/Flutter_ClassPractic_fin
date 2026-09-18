@@ -44,8 +44,9 @@ class AnimalQuery {
       search: search ?? this.search,
       species: species == _unset ? this.species : species as String?,
       sex: sex == _unset ? this.sex : sex as String?,
-      supplierId:
-          supplierId == _unset ? this.supplierId : supplierId as String?,
+      supplierId: supplierId == _unset
+          ? this.supplierId
+          : supplierId as String?,
       priceFrom: priceFrom == _unset ? this.priceFrom : priceFrom as double?,
       priceTo: priceTo == _unset ? this.priceTo : priceTo as double?,
       sortField: sortField ?? this.sortField,
@@ -123,16 +124,16 @@ class AnimalQuery {
 
   @override
   int get hashCode => Object.hash(
-        search,
-        species,
-        sex,
-        supplierId,
-        priceFrom,
-        priceTo,
-        sortField,
-        sortAscending,
-        page,
-        size,
-        includeDeleted,
-      );
+    search,
+    species,
+    sex,
+    supplierId,
+    priceFrom,
+    priceTo,
+    sortField,
+    sortAscending,
+    page,
+    size,
+    includeDeleted,
+  );
 }

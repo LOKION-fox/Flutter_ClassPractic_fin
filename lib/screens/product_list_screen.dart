@@ -23,10 +23,7 @@ import '../widgets/product_filters.dart';
 class ProductListScreen extends StatefulWidget {
   final ProductQuery initialQuery;
 
-  const ProductListScreen({
-    super.key,
-    required this.initialQuery,
-  });
+  const ProductListScreen({super.key, required this.initialQuery});
 
   @override
   State<ProductListScreen> createState() => _ProductListScreenState();
@@ -40,72 +37,59 @@ class _ProductListScreenState extends State<ProductListScreen> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) async {
-        final productNotifier = context.read<ProductListNotifier>();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final productNotifier = context.read<ProductListNotifier>();
 
-        final categoryNotifier = context.read<CategoryListNotifier>();
+      final categoryNotifier = context.read<CategoryListNotifier>();
 
-        final supplierNotifier = context.read<SupplierListNotifier>();
+      final supplierNotifier = context.read<SupplierListNotifier>();
 
-        await productNotifier.applyQuery(
-          widget.initialQuery,
-        );
+      await productNotifier.applyQuery(widget.initialQuery);
 
-        try {
-          final categories = await categoryNotifier.getAllActive();
+      try {
+        final categories = await categoryNotifier.getAllActive();
 
-          final suppliers = await supplierNotifier.getAllActive();
+        final suppliers = await supplierNotifier.getAllActive();
 
-          if (!mounted) {
-            return;
-          }
-
-          setState(() {
-            _categories = categories;
-            _suppliers = suppliers;
-          });
-        } on ApiException catch (e) {
-          if (!mounted) {
-            return;
-          }
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Не удалось загрузить справочники: '
-                '${e.message}',
-              ),
-            ),
-          );
+        if (!mounted) {
+          return;
         }
-      },
-    );
+
+        setState(() {
+          _categories = categories;
+          _suppliers = suppliers;
+        });
+      } on ApiException catch (e) {
+        if (!mounted) {
+          return;
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Не удалось загрузить справочники: '
+              '${e.message}',
+            ),
+          ),
+        );
+      }
+    });
   }
 
-  void _change(
-    ProductQuery query,
-  ) {
-    context.go(
-      query.toLocation(
-        '/products',
-      ),
-    );
+  void _change(ProductQuery query) {
+    context.go(query.toLocation('/products'));
   }
 
-  Future<void> _delete(
-    Product product,
-    bool hard,
-  ) async {
+  Future<void> _delete(Product product, bool hard) async {
     final confirmed = await confirmDialog(
       context,
       title: hard ? 'Физическое удаление' : 'Удаление',
       message: hard
           ? 'Удалить товар «${product.name}» '
-              'навсегда? Восстановить его '
-              'после этого будет невозможно.'
+                'навсегда? Восстановить его '
+                'после этого будет невозможно.'
           : 'Логически удалить товар '
-              '«${product.name}»?',
+                '«${product.name}»?',
     );
 
     if (!confirmed || !mounted) {
@@ -116,13 +100,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
     try {
       if (hard) {
-        await notifier.hardDelete(
-          product.id,
-        );
+        await notifier.hardDelete(product.id);
       } else {
-        await notifier.softDelete(
-          product.id,
-        );
+        await notifier.softDelete(product.id);
       }
     } on ApiException catch (e) {
       if (!mounted) {
@@ -139,23 +119,15 @@ class _ProductListScreenState extends State<ProductListScreen> {
         return;
       }
 
-      await messageDialog(
-        context,
-        title: 'Ошибка',
-        message: e.toString(),
-      );
+      await messageDialog(context, title: 'Ошибка', message: e.toString());
     }
   }
 
-  Future<void> _restore(
-    Product product,
-  ) async {
+  Future<void> _restore(Product product) async {
     final notifier = context.read<ProductListNotifier>();
 
     try {
-      await notifier.restore(
-        product.id,
-      );
+      await notifier.restore(product.id);
     } on ApiException catch (e) {
       if (!mounted) {
         return;
@@ -171,68 +143,43 @@ class _ProductListScreenState extends State<ProductListScreen> {
         return;
       }
 
-      await messageDialog(
-        context,
-        title: 'Ошибка',
-        message: e.toString(),
-      );
+      await messageDialog(context, title: 'Ошибка', message: e.toString());
     }
   }
 
-  Future<void> _cardAction(
-    String action,
-    Product product,
-  ) async {
+  Future<void> _cardAction(String action, Product product) async {
     switch (action) {
       case 'edit':
-        context.push(
-          '/products/${product.id}/edit',
-        );
+        context.push('/products/${product.id}/edit');
         break;
 
       case 'softDelete':
-        await _delete(
-          product,
-          false,
-        );
+        await _delete(product, false);
         break;
 
       case 'restore':
-        await _restore(
-          product,
-        );
+        await _restore(product);
         break;
 
       case 'hardDelete':
-        await _delete(
-          product,
-          true,
-        );
+        await _delete(product, true);
         break;
     }
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     final notifier = context.watch<ProductListNotifier>();
 
     final auth = context.watch<AuthNotifier>();
 
     final query = widget.initialQuery;
 
-    final canManage = auth.can(
-      AppPermission.manageCatalog,
-    );
+    final canManage = auth.can(AppPermission.manageCatalog);
 
-    final canHardDelete = auth.can(
-      AppPermission.hardDelete,
-    );
+    final canHardDelete = auth.can(AppPermission.hardDelete);
 
-    final canRestore = auth.can(
-      AppPermission.restore,
-    );
+    final canRestore = auth.can(AppPermission.restore);
 
     // Если пользователь не имеет права
     // управлять каталогом, выбранные строки
@@ -260,7 +207,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
       // ======================================================
       // ТАБЛИЦА ДЛЯ ШИРОКОГО ЭКРАНА
       // ======================================================
-
       table: EntityTable<Product>(
         items: notifier.result.items,
         idOf: (product) => product.id,
@@ -273,8 +219,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
           _change(
             query.copyWith(
               sortField: field,
-              sortAscending:
-                  field == query.sortField ? !query.sortAscending : true,
+              sortAscending: field == query.sortField
+                  ? !query.sortAscending
+                  : true,
             ),
           );
         },
@@ -283,25 +230,19 @@ class _ProductListScreenState extends State<ProductListScreen> {
             label: 'Название',
             sortField: 'name',
             build: (product) {
-              return Text(
-                product.name,
-              );
+              return Text(product.name);
             },
           ),
           TableColumnSpec<Product>(
             label: 'Артикул',
             build: (product) {
-              return Text(
-                product.article,
-              );
+              return Text(product.article);
             },
           ),
           TableColumnSpec<Product>(
             label: 'Бренд',
             build: (product) {
-              return Text(
-                product.brand,
-              );
+              return Text(product.brand);
             },
           ),
           TableColumnSpec<Product>(
@@ -309,9 +250,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
             sortField: 'price',
             numeric: true,
             build: (product) {
-              return Text(
-                '${product.price.toStringAsFixed(0)} ₽',
-              );
+              return Text('${product.price.toStringAsFixed(0)} ₽');
             },
           ),
           TableColumnSpec<Product>(
@@ -319,9 +258,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
             sortField: 'stock',
             numeric: true,
             build: (product) {
-              return Text(
-                '${product.stock}',
-              );
+              return Text('${product.stock}');
             },
           ),
         ],
@@ -331,13 +268,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
             // авторизованным пользователям.
             IconButton(
               tooltip: 'Просмотр',
-              icon: const Icon(
-                Icons.visibility,
-              ),
+              icon: const Icon(Icons.visibility),
               onPressed: () {
-                context.push(
-                  '/products/${product.id}',
-                );
+                context.push('/products/${product.id}');
               },
             ),
 
@@ -346,9 +279,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
             if (canManage && !product.isDeleted)
               IconButton(
                 tooltip: 'Редактировать',
-                icon: const Icon(
-                  Icons.edit,
-                ),
+                icon: const Icon(Icons.edit),
                 onPressed: () {
                   context.push(
                     '/products/'
@@ -362,14 +293,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
             if (canManage && !product.isDeleted)
               IconButton(
                 tooltip: 'Логически удалить',
-                icon: const Icon(
-                  Icons.delete_outline,
-                ),
+                icon: const Icon(Icons.delete_outline),
                 onPressed: () {
-                  _delete(
-                    product,
-                    false,
-                  );
+                  _delete(product, false);
                 },
               ),
 
@@ -378,13 +304,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
             if (canRestore && product.isDeleted)
               IconButton(
                 tooltip: 'Восстановить',
-                icon: const Icon(
-                  Icons.restore,
-                ),
+                icon: const Icon(Icons.restore),
                 onPressed: () {
-                  _restore(
-                    product,
-                  );
+                  _restore(product);
                 },
               ),
 
@@ -393,14 +315,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
             if (canHardDelete)
               IconButton(
                 tooltip: 'Удалить навсегда',
-                icon: const Icon(
-                  Icons.delete_forever,
-                ),
+                icon: const Icon(Icons.delete_forever),
                 onPressed: () {
-                  _delete(
-                    product,
-                    true,
-                  );
+                  _delete(product, true);
                 },
               ),
           ];
@@ -410,9 +327,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
       // ======================================================
       // КАРТОЧКИ ДЛЯ ЭКРАНА < 600 PX
       // ======================================================
-
       cardBuilder: (product) {
-        final hasActions = (canManage && !product.isDeleted) ||
+        final hasActions =
+            (canManage && !product.isDeleted) ||
             (canRestore && product.isDeleted) ||
             canHardDelete;
 
@@ -423,9 +340,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   ? Icons.remove_shopping_cart
                   : Icons.shopping_bag,
             ),
-            title: Text(
-              product.name,
-            ),
+            title: Text(product.name),
             subtitle: Text(
               'Артикул: '
               '${product.article}\n'
@@ -439,17 +354,12 @@ class _ProductListScreenState extends State<ProductListScreen> {
             ),
             isThreeLine: true,
             onTap: () {
-              context.push(
-                '/products/${product.id}',
-              );
+              context.push('/products/${product.id}');
             },
             trailing: hasActions
                 ? PopupMenuButton<String>(
                     onSelected: (value) {
-                      _cardAction(
-                        value,
-                        product,
-                      );
+                      _cardAction(value, product);
                     },
                     itemBuilder: (context) {
                       return [
@@ -457,48 +367,32 @@ class _ProductListScreenState extends State<ProductListScreen> {
                           const PopupMenuItem(
                             value: 'edit',
                             child: ListTile(
-                              leading: Icon(
-                                Icons.edit,
-                              ),
-                              title: Text(
-                                'Редактировать',
-                              ),
+                              leading: Icon(Icons.edit),
+                              title: Text('Редактировать'),
                             ),
                           ),
                         if (canManage && !product.isDeleted)
                           const PopupMenuItem(
                             value: 'softDelete',
                             child: ListTile(
-                              leading: Icon(
-                                Icons.delete_outline,
-                              ),
-                              title: Text(
-                                'Удалить',
-                              ),
+                              leading: Icon(Icons.delete_outline),
+                              title: Text('Удалить'),
                             ),
                           ),
                         if (canRestore && product.isDeleted)
                           const PopupMenuItem(
                             value: 'restore',
                             child: ListTile(
-                              leading: Icon(
-                                Icons.restore,
-                              ),
-                              title: Text(
-                                'Восстановить',
-                              ),
+                              leading: Icon(Icons.restore),
+                              title: Text('Восстановить'),
                             ),
                           ),
                         if (canHardDelete)
                           const PopupMenuItem(
                             value: 'hardDelete',
                             child: ListTile(
-                              leading: Icon(
-                                Icons.delete_forever,
-                              ),
-                              title: Text(
-                                'Удалить навсегда',
-                              ),
+                              leading: Icon(Icons.delete_forever),
+                              title: Text('Удалить навсегда'),
                             ),
                           ),
                       ];
@@ -518,9 +412,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
       // Кнопка "+" скрыта у customer.
       onCreate: canManage
           ? () {
-              context.push(
-                '/products/new',
-              );
+              context.push('/products/new');
             }
           : null,
 
@@ -533,20 +425,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
       size: notifier.result.size,
 
       onPageChanged: (page) {
-        _change(
-          query.copyWith(
-            page: page,
-          ),
-        );
+        _change(query.copyWith(page: page));
       },
 
       onSizeChanged: (size) {
-        _change(
-          query.copyWith(
-            size: size,
-            page: 1,
-          ),
-        );
+        _change(query.copyWith(size: size, page: 1));
       },
     );
   }

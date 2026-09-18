@@ -1,8 +1,4 @@
-enum AppRole {
-  customer,
-  manager,
-  admin,
-}
+enum AppRole { customer, manager, admin }
 
 enum AppPermission {
   viewCatalog,
@@ -64,10 +60,7 @@ extension AppRoleExtension on AppRole {
   }
 }
 
-bool roleHasPermission(
-  AppRole role,
-  AppPermission permission,
-) {
+bool roleHasPermission(AppRole role, AppPermission permission) {
   switch (role) {
     case AppRole.customer:
       return {

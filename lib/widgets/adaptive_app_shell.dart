@@ -72,10 +72,7 @@ class AdaptiveAppShell extends StatelessWidget {
           route: '/admin/users',
           icon: Icons.manage_accounts_outlined,
           selectedIcon: Icons.manage_accounts,
-          relatedPrefixes: [
-            '/admin/users',
-            '/admin/stats',
-          ],
+          relatedPrefixes: ['/admin/users', '/admin/stats'],
         ),
       );
     }
@@ -83,13 +80,9 @@ class AdaptiveAppShell extends StatelessWidget {
     return items;
   }
 
-  int _selectedIndex(
-    List<_NavigationItem> items,
-  ) {
+  int _selectedIndex(List<_NavigationItem> items) {
     for (var i = 0; i < items.length; i++) {
-      if (items[i].matches(
-        currentLocation,
-      )) {
+      if (items[i].matches(currentLocation)) {
         return i;
       }
     }
@@ -102,21 +95,15 @@ class AdaptiveAppShell extends StatelessWidget {
       policy: ReadingOrderTraversalPolicy(),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: 1500,
-          ),
-          child: SizedBox.expand(
-            child: child,
-          ),
+          constraints: const BoxConstraints(maxWidth: 1500),
+          child: SizedBox.expand(child: child),
         ),
       ),
     );
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     final auth = context.watch<AuthNotifier>();
 
     final items = _items(auth);
@@ -124,10 +111,7 @@ class AdaptiveAppShell extends StatelessWidget {
     final selectedIndex = _selectedIndex(items);
 
     return LayoutBuilder(
-      builder: (
-        context,
-        constraints,
-      ) {
+      builder: (context, constraints) {
         final width = constraints.maxWidth;
 
         if (width < 600) {
@@ -138,17 +122,13 @@ class AdaptiveAppShell extends StatelessWidget {
               labelBehavior:
                   NavigationDestinationLabelBehavior.onlyShowSelected,
               onDestinationSelected: (index) {
-                context.go(
-                  items[index].route,
-                );
+                context.go(items[index].route);
               },
               destinations: items
                   .map(
                     (item) => NavigationDestination(
                       icon: Icon(item.icon),
-                      selectedIcon: Icon(
-                        item.selectedIcon,
-                      ),
+                      selectedIcon: Icon(item.selectedIcon),
                       label: item.label,
                       tooltip: item.label,
                     ),
@@ -173,48 +153,31 @@ class AdaptiveAppShell extends StatelessWidget {
                       ? NavigationRailLabelType.none
                       : NavigationRailLabelType.selected,
                   onDestinationSelected: (index) {
-                    context.go(
-                      items[index].route,
-                    );
+                    context.go(items[index].route);
                   },
                   leading: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
                     child: Tooltip(
                       message: 'Зоомагазин',
-                      child: Icon(
-                        Icons.pets,
-                        size: extended ? 34 : 30,
-                      ),
+                      child: Icon(Icons.pets, size: extended ? 34 : 30),
                     ),
                   ),
-                  destinations: items.map(
-                    (item) {
-                      return NavigationRailDestination(
-                        icon: Tooltip(
-                          message: item.label,
-                          child: Icon(
-                            item.icon,
-                          ),
-                        ),
-                        selectedIcon: Tooltip(
-                          message: item.label,
-                          child: Icon(
-                            item.selectedIcon,
-                          ),
-                        ),
-                        label: Text(
-                          item.label,
-                        ),
-                      );
-                    },
-                  ).toList(),
+                  destinations: items.map((item) {
+                    return NavigationRailDestination(
+                      icon: Tooltip(
+                        message: item.label,
+                        child: Icon(item.icon),
+                      ),
+                      selectedIcon: Tooltip(
+                        message: item.label,
+                        child: Icon(item.selectedIcon),
+                      ),
+                      label: Text(item.label),
+                    );
+                  }).toList(),
                 ),
               ),
-              const VerticalDivider(
-                width: 1,
-              ),
+              const VerticalDivider(width: 1),
               Expanded(
                 child: ColoredBox(
                   color: Theme.of(context).colorScheme.surfaceContainerLowest,
@@ -246,26 +209,17 @@ class _NavigationItem {
     this.relatedPrefixes = const [],
   });
 
-  bool matches(
-    String location,
-  ) {
+  bool matches(String location) {
     if (route == '/') {
       return location == '/';
     }
 
-    if (location == route ||
-        location.startsWith(
-          '$route/',
-        )) {
+    if (location == route || location.startsWith('$route/')) {
       return true;
     }
 
     return relatedPrefixes.any(
-      (prefix) =>
-          location == prefix ||
-          location.startsWith(
-            '$prefix/',
-          ),
+      (prefix) => location == prefix || location.startsWith('$prefix/'),
     );
   }
 }

@@ -52,120 +52,61 @@ Future<void> main() async {
     initial: prefs.getString('pb_auth'),
   );
 
-  final apiClient = ApiClient(
-    baseUrl: ApiConfig.baseUrl,
-    authStore: authStore,
-  );
+  final apiClient = ApiClient(baseUrl: ApiConfig.baseUrl, authStore: authStore);
 
   final authService = AuthService(apiClient);
 
-  final authNotifier = AuthNotifier(
-    prefs,
-    authService,
-  );
+  final authNotifier = AuthNotifier(prefs, authService);
 
   // AsyncAuthStore восстанавливает PocketBase-токен после F5.
   await authNotifier.restore();
 
-  final productRepository = ApiProductRepository(
-    apiClient,
-    authService,
-  );
+  final productRepository = ApiProductRepository(apiClient, authService);
 
-  final animalRepository = ApiAnimalRepository(
-    apiClient,
-    authService,
-  );
+  final animalRepository = ApiAnimalRepository(apiClient, authService);
 
-  final categoryRepository = ApiCategoryRepository(
-    apiClient,
-    authService,
-  );
+  final categoryRepository = ApiCategoryRepository(apiClient, authService);
 
-  final supplierRepository = ApiSupplierRepository(
-    apiClient,
-    authService,
-  );
+  final supplierRepository = ApiSupplierRepository(apiClient, authService);
 
-  final customerRepository = ApiCustomerRepository(
-    apiClient,
-    authService,
-  );
+  final customerRepository = ApiCustomerRepository(apiClient, authService);
 
-  final userAdminRepository = ApiUserAdminRepository(
-    apiClient,
-    authService,
-  );
+  final userAdminRepository = ApiUserAdminRepository(apiClient, authService);
 
-  final router = buildRouter(
-    authNotifier,
-  );
+  final router = buildRouter(authNotifier);
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<AuthNotifier>.value(
-          value: authNotifier,
-        ),
-        Provider<ApiClient>.value(
-          value: apiClient,
-        ),
-        Provider<AuthService>.value(
-          value: authService,
-        ),
-        Provider<ProductRepository>.value(
-          value: productRepository,
-        ),
-        Provider<AnimalRepository>.value(
-          value: animalRepository,
-        ),
-        Provider<CategoryRepository>.value(
-          value: categoryRepository,
-        ),
-        Provider<SupplierRepository>.value(
-          value: supplierRepository,
-        ),
-        Provider<CustomerRepository>.value(
-          value: customerRepository,
-        ),
-        Provider<UserAdminRepository>.value(
-          value: userAdminRepository,
+        ChangeNotifierProvider<AuthNotifier>.value(value: authNotifier),
+        Provider<ApiClient>.value(value: apiClient),
+        Provider<AuthService>.value(value: authService),
+        Provider<ProductRepository>.value(value: productRepository),
+        Provider<AnimalRepository>.value(value: animalRepository),
+        Provider<CategoryRepository>.value(value: categoryRepository),
+        Provider<SupplierRepository>.value(value: supplierRepository),
+        Provider<CustomerRepository>.value(value: customerRepository),
+        Provider<UserAdminRepository>.value(value: userAdminRepository),
+        ChangeNotifierProvider(
+          create: (_) => ProductListNotifier(productRepository),
         ),
         ChangeNotifierProvider(
-          create: (_) => ProductListNotifier(
-            productRepository,
-          ),
+          create: (_) => AnimalListNotifier(animalRepository),
         ),
         ChangeNotifierProvider(
-          create: (_) => AnimalListNotifier(
-            animalRepository,
-          ),
+          create: (_) => CategoryListNotifier(categoryRepository),
         ),
         ChangeNotifierProvider(
-          create: (_) => CategoryListNotifier(
-            categoryRepository,
-          ),
+          create: (_) => SupplierListNotifier(supplierRepository),
         ),
         ChangeNotifierProvider(
-          create: (_) => SupplierListNotifier(
-            supplierRepository,
-          ),
+          create: (_) => CustomerListNotifier(customerRepository),
         ),
         ChangeNotifierProvider(
-          create: (_) => CustomerListNotifier(
-            customerRepository,
-          ),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => UserAdminNotifier(
-            userAdminRepository,
-          ),
+          create: (_) => UserAdminNotifier(userAdminRepository),
         ),
       ],
-      child: PetShopApp(
-        router: router,
-        auth: authNotifier,
-      ),
+      child: PetShopApp(router: router, auth: authNotifier),
     ),
   );
 }
@@ -175,31 +116,20 @@ class PetShopApp extends StatelessWidget {
 
   final AuthNotifier auth;
 
-  const PetShopApp({
-    super.key,
-    required this.router,
-    required this.auth,
-  });
+  const PetShopApp({super.key, required this.router, required this.auth});
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Зоомагазин',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.teal,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,
       ),
       routerConfig: router,
       builder: (context, child) {
-        return SessionWatcher(
-          auth: auth,
-          child: child ?? const SizedBox(),
-        );
+        return SessionWatcher(auth: auth, child: child ?? const SizedBox());
       },
     );
   }

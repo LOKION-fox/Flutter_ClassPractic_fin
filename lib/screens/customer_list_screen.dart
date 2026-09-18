@@ -17,10 +17,7 @@ import '../widgets/simple_filters.dart';
 class CustomerListScreen extends StatefulWidget {
   final SimpleQuery initialQuery;
 
-  const CustomerListScreen({
-    super.key,
-    required this.initialQuery,
-  });
+  const CustomerListScreen({super.key, required this.initialQuery});
 
   @override
   State<CustomerListScreen> createState() => _CustomerListScreenState();
@@ -31,30 +28,16 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        context.read<CustomerListNotifier>().applyQuery(
-              widget.initialQuery,
-            );
-      },
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CustomerListNotifier>().applyQuery(widget.initialQuery);
+    });
   }
 
-  void _change(
-    SimpleQuery query,
-  ) {
-    context.go(
-      query.toLocation(
-        '/customers',
-        filterParam: 'level',
-      ),
-    );
+  void _change(SimpleQuery query) {
+    context.go(query.toLocation('/customers', filterParam: 'level'));
   }
 
-  Future<void> _delete(
-    Customer customer,
-    bool hard,
-  ) async {
+  Future<void> _delete(Customer customer, bool hard) async {
     final ok = await confirmDialog(
       context,
       title: 'Удаление',
@@ -71,13 +54,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
       final notifier = context.read<CustomerListNotifier>();
 
       if (hard) {
-        await notifier.hardDelete(
-          customer.id,
-        );
+        await notifier.hardDelete(customer.id);
       } else {
-        await notifier.softDelete(
-          customer.id,
-        );
+        await notifier.softDelete(customer.id);
       }
     } catch (e) {
       if (!mounted) {
@@ -92,13 +71,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     }
   }
 
-  Future<void> _restore(
-    Customer customer,
-  ) async {
+  Future<void> _restore(Customer customer) async {
     try {
-      await context.read<CustomerListNotifier>().restore(
-            customer.id,
-          );
+      await context.read<CustomerListNotifier>().restore(customer.id);
     } catch (e) {
       if (!mounted) {
         return;
@@ -113,22 +88,16 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     final notifier = context.watch<CustomerListNotifier>();
 
     final auth = context.watch<AuthNotifier>();
 
     final query = widget.initialQuery;
 
-    final canHardDelete = auth.can(
-      AppPermission.hardDelete,
-    );
+    final canHardDelete = auth.can(AppPermission.hardDelete);
 
-    final canRestore = auth.can(
-      AppPermission.restore,
-    );
+    final canRestore = auth.can(AppPermission.restore);
 
     return EntityListScaffold<Customer>(
       title: 'Покупатели',
@@ -158,8 +127,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
           _change(
             query.copyWith(
               sortField: field,
-              sortAscending:
-                  field == query.sortField ? !query.sortAscending : true,
+              sortAscending: field == query.sortField
+                  ? !query.sortAscending
+                  : true,
             ),
           );
         },
@@ -168,26 +138,20 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
             label: 'Фамилия',
             sortField: 'lastName',
             build: (customer) {
-              return Text(
-                customer.fullName,
-              );
+              return Text(customer.fullName);
             },
           ),
           TableColumnSpec(
             label: 'Email',
             sortField: 'email',
             build: (customer) {
-              return Text(
-                customer.email,
-              );
+              return Text(customer.email);
             },
           ),
           TableColumnSpec(
             label: 'Телефон',
             build: (customer) {
-              return Text(
-                customer.phone,
-              );
+              return Text(customer.phone);
             },
           ),
           TableColumnSpec(
@@ -195,9 +159,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
             sortField: 'points',
             numeric: true,
             build: (customer) {
-              return Text(
-                '${customer.loyaltyCard.points}',
-              );
+              return Text('${customer.loyaltyCard.points}');
             },
           ),
         ],
@@ -205,9 +167,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
           return [
             IconButton(
               tooltip: 'Просмотр',
-              icon: const Icon(
-                Icons.visibility,
-              ),
+              icon: const Icon(Icons.visibility),
               onPressed: () {
                 context.push(
                   '/customers/'
@@ -218,9 +178,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
             if (!customer.isDeleted)
               IconButton(
                 tooltip: 'Редактировать',
-                icon: const Icon(
-                  Icons.edit,
-                ),
+                icon: const Icon(Icons.edit),
                 onPressed: () {
                   context.push(
                     '/customers/'
@@ -231,39 +189,25 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
             if (!customer.isDeleted)
               IconButton(
                 tooltip: 'Логически удалить',
-                icon: const Icon(
-                  Icons.delete_outline,
-                ),
+                icon: const Icon(Icons.delete_outline),
                 onPressed: () {
-                  _delete(
-                    customer,
-                    false,
-                  );
+                  _delete(customer, false);
                 },
               ),
             if (canRestore && customer.isDeleted)
               IconButton(
                 tooltip: 'Восстановить',
-                icon: const Icon(
-                  Icons.restore,
-                ),
+                icon: const Icon(Icons.restore),
                 onPressed: () {
-                  _restore(
-                    customer,
-                  );
+                  _restore(customer);
                 },
               ),
             if (canHardDelete)
               IconButton(
                 tooltip: 'Удалить навсегда',
-                icon: const Icon(
-                  Icons.delete_forever,
-                ),
+                icon: const Icon(Icons.delete_forever),
                 onPressed: () {
-                  _delete(
-                    customer,
-                    true,
-                  );
+                  _delete(customer, true);
                 },
               ),
           ];
@@ -295,28 +239,17 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
       onDeleteSelected: notifier.deleteSelected,
       onRetry: notifier.load,
       onCreate: () {
-        context.push(
-          '/customers/new',
-        );
+        context.push('/customers/new');
       },
       page: notifier.result.page,
       totalPages: notifier.result.totalPages,
       total: notifier.result.total,
       size: notifier.result.size,
       onPageChanged: (page) {
-        _change(
-          query.copyWith(
-            page: page,
-          ),
-        );
+        _change(query.copyWith(page: page));
       },
       onSizeChanged: (size) {
-        _change(
-          query.copyWith(
-            size: size,
-            page: 1,
-          ),
-        );
+        _change(query.copyWith(size: size, page: 1));
       },
     );
   }

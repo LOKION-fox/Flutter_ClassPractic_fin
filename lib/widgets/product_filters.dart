@@ -42,9 +42,7 @@ class _ProductFiltersState extends State<ProductFilters> {
   void initState() {
     super.initState();
 
-    _searchController = TextEditingController(
-      text: widget.query.search,
-    );
+    _searchController = TextEditingController(text: widget.query.search);
 
     _priceFrom = TextEditingController(
       text: widget.query.priceFrom?.toString() ?? '',
@@ -69,24 +67,13 @@ class _ProductFiltersState extends State<ProductFilters> {
   void _search(String value) {
     _timer?.cancel();
 
-    _timer = Timer(
-      const Duration(
-        milliseconds: 350,
-      ),
-      () {
-        widget.onChanged(
-          widget.query.copyWith(
-            search: value,
-          ),
-        );
-      },
-    );
+    _timer = Timer(const Duration(milliseconds: 350), () {
+      widget.onChanged(widget.query.copyWith(search: value));
+    });
   }
 
   double? _number(String value) {
-    return double.tryParse(
-      value.replaceAll(',', '.'),
-    );
+    return double.tryParse(value.replaceAll(',', '.'));
   }
 
   @override
@@ -134,9 +121,7 @@ class _ProductFiltersState extends State<ProductFilters> {
                     ],
                     onChanged: (value) {
                       widget.onChanged(
-                        widget.query.copyWith(
-                          categoryId: value,
-                        ),
+                        widget.query.copyWith(categoryId: value),
                       );
                     },
                   ),
@@ -164,9 +149,7 @@ class _ProductFiltersState extends State<ProductFilters> {
                     ],
                     onChanged: (value) {
                       widget.onChanged(
-                        widget.query.copyWith(
-                          supplierId: value,
-                        ),
+                        widget.query.copyWith(supplierId: value),
                       );
                     },
                   ),
@@ -195,18 +178,12 @@ class _ProductFiltersState extends State<ProductFilters> {
                   onPressed: () {
                     widget.onChanged(
                       widget.query.copyWith(
-                        priceFrom: _number(
-                          _priceFrom.text,
-                        ),
-                        priceTo: _number(
-                          _priceTo.text,
-                        ),
+                        priceFrom: _number(_priceFrom.text),
+                        priceTo: _number(_priceTo.text),
                       ),
                     );
                   },
-                  child: const Text(
-                    'Применить',
-                  ),
+                  child: const Text('Применить'),
                 ),
               ],
             ),
@@ -220,30 +197,18 @@ class _ProductFiltersState extends State<ProductFilters> {
                     value: widget.query.includeDeleted,
                     onChanged: (value) {
                       widget.onChanged(
-                        widget.query.copyWith(
-                          includeDeleted: value,
-                        ),
+                        widget.query.copyWith(includeDeleted: value),
                       );
                     },
                   ),
-                  const Text(
-                    'Показывать удалённые',
-                  ),
+                  const Text('Показывать удалённые'),
                 ],
                 TextButton.icon(
                   onPressed: () {
-                    widget.onChanged(
-                      ProductQuery(
-                        size: widget.query.size,
-                      ),
-                    );
+                    widget.onChanged(ProductQuery(size: widget.query.size));
                   },
-                  icon: const Icon(
-                    Icons.clear,
-                  ),
-                  label: const Text(
-                    'Сбросить',
-                  ),
+                  icon: const Icon(Icons.clear),
+                  label: const Text('Сбросить'),
                 ),
               ],
             ),

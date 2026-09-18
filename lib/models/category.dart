@@ -35,11 +35,7 @@ class Category {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'kind': kind,
-      'description': description,
-    };
+    return {'name': name, 'kind': kind, 'description': description};
   }
 
   factory Category.fromJson(Map<String, dynamic> json) {

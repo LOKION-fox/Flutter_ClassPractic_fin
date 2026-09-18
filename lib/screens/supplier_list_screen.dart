@@ -198,8 +198,8 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
             numeric: true,
             build: (supplier) {
               return Text(
-                '${supplier.id}',
-              );
+                supplier.id,
+              );;
             },
           ),
         ],

@@ -7,9 +7,7 @@ import '../state/auth_notifier.dart';
 import '../widgets/permission_gate.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({
-    super.key,
-  });
+  const HomeScreen({super.key});
 
   Widget _button(
     BuildContext context,
@@ -37,16 +35,12 @@ class HomeScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     final auth = context.watch<AuthNotifier>();
 
     final role = auth.uiRole;
 
-    final screenWidth = MediaQuery.sizeOf(
-      context,
-    ).width;
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
     return Scaffold(
       appBar: AppBar(
@@ -59,47 +53,32 @@ class HomeScreen extends StatelessWidget {
         actions: [
           if (screenWidth >= 600)
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-              ),
-              child: Center(
-                child: Text(
-                  role?.title ?? '',
-                ),
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Center(child: Text(role?.title ?? '')),
             ),
           IconButton(
             tooltip: 'Выйти',
             onPressed: () async {
               await auth.logout();
             },
-            icon: const Icon(
-              Icons.logout,
-            ),
+            icon: const Icon(Icons.logout),
           ),
         ],
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(
-            24,
-          ),
+          padding: const EdgeInsets.all(24),
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 1100,
-            ),
+            constraints: const BoxConstraints(maxWidth: 1100),
             child: LayoutBuilder(
-              builder: (
-                context,
-                constraints,
-              ) {
+              builder: (context, constraints) {
                 const spacing = 16.0;
 
                 final columns = constraints.maxWidth < 600
                     ? 1
                     : constraints.maxWidth < 1000
-                        ? 2
-                        : 3;
+                    ? 2
+                    : 3;
 
                 final buttonWidth =
                     (constraints.maxWidth - spacing * (columns - 1)) / columns;

@@ -39,9 +39,7 @@ class _DeferredScreenState extends State<DeferredScreen> {
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
+            body: Center(child: CircularProgressIndicator()),
           );
         }
 
@@ -53,25 +51,16 @@ class _DeferredScreenState extends State<DeferredScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
-                      Icons.error_outline,
-                      size: 56,
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
+                    const Icon(Icons.error_outline, size: 56),
+                    const SizedBox(height: 16),
                     const Text(
                       'Не удалось загрузить раздел.',
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(
-                      height: 16,
-                    ),
+                    const SizedBox(height: 16),
                     FilledButton(
                       onPressed: _retry,
-                      child: const Text(
-                        'Повторить',
-                      ),
+                      child: const Text('Повторить'),
                     ),
                   ],
                 ),

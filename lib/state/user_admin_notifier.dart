@@ -9,9 +9,7 @@ import 'load_status.dart';
 class UserAdminNotifier extends ChangeNotifier {
   final UserAdminRepository _repository;
 
-  UserAdminNotifier(
-    this._repository,
-  );
+  UserAdminNotifier(this._repository);
 
   List<AppUser> _users = [];
 
@@ -47,14 +45,8 @@ class UserAdminNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> changeRole(
-    String userId,
-    AppRole role,
-  ) async {
-    await _repository.changeRole(
-      userId,
-      role,
-    );
+  Future<void> changeRole(String userId, AppRole role) async {
+    await _repository.changeRole(userId, role);
 
     await loadUsers();
   }

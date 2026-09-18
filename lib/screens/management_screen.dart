@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class ManagementScreen extends StatelessWidget {
-  const ManagementScreen({
-    super.key,
-  });
+  const ManagementScreen({super.key});
 
   Widget _button(
     BuildContext context,
@@ -32,29 +30,16 @@ class ManagementScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Панель управления',
-        ),
-      ),
+      appBar: AppBar(title: const Text('Панель управления')),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(
-            24,
-          ),
+          padding: const EdgeInsets.all(24),
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 1000,
-            ),
+            constraints: const BoxConstraints(maxWidth: 1000),
             child: LayoutBuilder(
-              builder: (
-                context,
-                constraints,
-              ) {
+              builder: (context, constraints) {
                 const spacing = 16.0;
 
                 final columns = constraints.maxWidth < 600 ? 1 : 2;

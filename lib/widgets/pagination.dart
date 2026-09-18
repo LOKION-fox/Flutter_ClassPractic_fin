@@ -30,67 +30,34 @@ class Pagination extends StatelessWidget {
         IconButton(
           tooltip: 'Первая страница',
           onPressed: page > 1 ? () => onPageChanged(1) : null,
-          icon: const Icon(
-            Icons.first_page,
-          ),
+          icon: const Icon(Icons.first_page),
         ),
         IconButton(
           tooltip: 'Предыдущая страница',
-          onPressed: page > 1
-              ? () => onPageChanged(
-                    page - 1,
-                  )
-              : null,
-          icon: const Icon(
-            Icons.chevron_left,
-          ),
+          onPressed: page > 1 ? () => onPageChanged(page - 1) : null,
+          icon: const Icon(Icons.chevron_left),
         ),
-        Text(
-          'Страница $page из $totalPages',
-        ),
+        Text('Страница $page из $totalPages'),
         IconButton(
           tooltip: 'Следующая страница',
-          onPressed: page < totalPages
-              ? () => onPageChanged(
-                    page + 1,
-                  )
-              : null,
-          icon: const Icon(
-            Icons.chevron_right,
-          ),
+          onPressed: page < totalPages ? () => onPageChanged(page + 1) : null,
+          icon: const Icon(Icons.chevron_right),
         ),
         IconButton(
           tooltip: 'Последняя страница',
-          onPressed: page < totalPages
-              ? () => onPageChanged(
-                    totalPages,
-                  )
-              : null,
-          icon: const Icon(
-            Icons.last_page,
-          ),
+          onPressed: page < totalPages ? () => onPageChanged(totalPages) : null,
+          icon: const Icon(Icons.last_page),
         ),
         const SizedBox(width: 12),
-        Text(
-          'Всего записей: $total',
-        ),
+        Text('Всего записей: $total'),
         const SizedBox(width: 12),
         const Text('На странице:'),
         DropdownButton<int>(
           value: size,
           items: const [
-            DropdownMenuItem(
-              value: 10,
-              child: Text('10'),
-            ),
-            DropdownMenuItem(
-              value: 25,
-              child: Text('25'),
-            ),
-            DropdownMenuItem(
-              value: 50,
-              child: Text('50'),
-            ),
+            DropdownMenuItem(value: 10, child: Text('10')),
+            DropdownMenuItem(value: 25, child: Text('25')),
+            DropdownMenuItem(value: 50, child: Text('50')),
           ],
           onChanged: (value) {
             if (value != null) {

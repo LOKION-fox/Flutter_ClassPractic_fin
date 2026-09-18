@@ -10,9 +10,7 @@ import 'load_status.dart';
 class SupplierListNotifier extends ChangeNotifier {
   final SupplierRepository _repository;
 
-  SupplierListNotifier(
-    this._repository,
-  );
+  SupplierListNotifier(this._repository);
 
   SimpleQuery _query = const SimpleQuery();
 
@@ -40,9 +38,7 @@ class SupplierListNotifier extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _result = await _repository.find(
-        _query,
-      );
+      _result = await _repository.find(_query);
 
       _status = LoadStatus.success;
     } on RequestCancelledException {
@@ -59,9 +55,7 @@ class SupplierListNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> applyQuery(
-    SimpleQuery query,
-  ) async {
+  Future<void> applyQuery(SimpleQuery query) async {
     _query = query;
     _selected.clear();
 
@@ -85,44 +79,28 @@ class SupplierListNotifier extends ChangeNotifier {
   Future<List<Supplier>> getAllActive() async {
     final values = await _repository.all();
 
-    return values
-        .where(
-          (item) => !item.isDeleted,
-        )
-        .toList();
+    return values.where((item) => !item.isDeleted).toList();
   }
 
-  Future<Supplier?> findById(
-    String id,
-  ) {
+  Future<Supplier?> findById(String id) {
     return _repository.findById(id);
   }
 
-  Future<Supplier> create(
-    Supplier supplier,
-  ) async {
-    final created = await _repository.create(
-      supplier,
-    );
+  Future<Supplier> create(Supplier supplier) async {
+    final created = await _repository.create(supplier);
 
     await load();
 
     return created;
   }
 
-  Future<void> update(
-    Supplier supplier,
-  ) async {
-    await _repository.update(
-      supplier,
-    );
+  Future<void> update(Supplier supplier) async {
+    await _repository.update(supplier);
 
     await load();
   }
 
-  Future<void> softDelete(
-    String id,
-  ) async {
+  Future<void> softDelete(String id) async {
     await _repository.softDelete(id);
 
     _selected.remove(id);
@@ -130,9 +108,7 @@ class SupplierListNotifier extends ChangeNotifier {
     await load();
   }
 
-  Future<void> hardDelete(
-    String id,
-  ) async {
+  Future<void> hardDelete(String id) async {
     await _repository.hardDelete(id);
 
     _selected.remove(id);
@@ -140,18 +116,14 @@ class SupplierListNotifier extends ChangeNotifier {
     await load();
   }
 
-  Future<void> restore(
-    String id,
-  ) async {
+  Future<void> restore(String id) async {
     await _repository.restore(id);
 
     await load();
   }
 
   Future<void> deleteSelected() async {
-    await _repository.deleteMany(
-      _selected.toList(),
-    );
+    await _repository.deleteMany(_selected.toList());
 
     _selected.clear();
 

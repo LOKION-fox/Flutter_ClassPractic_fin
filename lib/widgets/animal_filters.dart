@@ -35,9 +35,7 @@ class _AnimalFiltersState extends State<AnimalFilters> {
   void initState() {
     super.initState();
 
-    _search = TextEditingController(
-      text: widget.query.search,
-    );
+    _search = TextEditingController(text: widget.query.search);
   }
 
   @override
@@ -48,23 +46,12 @@ class _AnimalFiltersState extends State<AnimalFilters> {
     super.dispose();
   }
 
-  void _searchChanged(
-    String value,
-  ) {
+  void _searchChanged(String value) {
     _timer?.cancel();
 
-    _timer = Timer(
-      const Duration(
-        milliseconds: 350,
-      ),
-      () {
-        widget.onChanged(
-          widget.query.copyWith(
-            search: value,
-          ),
-        );
-      },
-    );
+    _timer = Timer(const Duration(milliseconds: 350), () {
+      widget.onChanged(widget.query.copyWith(search: value));
+    });
   }
 
   @override
@@ -98,43 +85,22 @@ class _AnimalFiltersState extends State<AnimalFilters> {
                       border: OutlineInputBorder(),
                     ),
                     items: const [
-                      DropdownMenuItem(
-                        value: null,
-                        child: Text('Все'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Кошка',
-                        child: Text('Кошка'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Собака',
-                        child: Text('Собака'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Хомяк',
-                        child: Text('Хомяк'),
-                      ),
+                      DropdownMenuItem(value: null, child: Text('Все')),
+                      DropdownMenuItem(value: 'Кошка', child: Text('Кошка')),
+                      DropdownMenuItem(value: 'Собака', child: Text('Собака')),
+                      DropdownMenuItem(value: 'Хомяк', child: Text('Хомяк')),
                       DropdownMenuItem(
                         value: 'Попугай',
                         child: Text('Попугай'),
                       ),
-                      DropdownMenuItem(
-                        value: 'Кролик',
-                        child: Text('Кролик'),
-                      ),
+                      DropdownMenuItem(value: 'Кролик', child: Text('Кролик')),
                       DropdownMenuItem(
                         value: 'Морская свинка',
-                        child: Text(
-                          'Морская свинка',
-                        ),
+                        child: Text('Морская свинка'),
                       ),
                     ],
                     onChanged: (value) {
-                      widget.onChanged(
-                        widget.query.copyWith(
-                          species: value,
-                        ),
-                      );
+                      widget.onChanged(widget.query.copyWith(species: value));
                     },
                   ),
                 ),
@@ -147,25 +113,12 @@ class _AnimalFiltersState extends State<AnimalFilters> {
                       border: OutlineInputBorder(),
                     ),
                     items: const [
-                      DropdownMenuItem(
-                        value: null,
-                        child: Text('Любой'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Самец',
-                        child: Text('Самец'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Самка',
-                        child: Text('Самка'),
-                      ),
+                      DropdownMenuItem(value: null, child: Text('Любой')),
+                      DropdownMenuItem(value: 'Самец', child: Text('Самец')),
+                      DropdownMenuItem(value: 'Самка', child: Text('Самка')),
                     ],
                     onChanged: (value) {
-                      widget.onChanged(
-                        widget.query.copyWith(
-                          sex: value,
-                        ),
-                      );
+                      widget.onChanged(widget.query.copyWith(sex: value));
                     },
                   ),
                 ),
@@ -184,17 +137,13 @@ class _AnimalFiltersState extends State<AnimalFilters> {
                         child: Text('Все'),
                       ),
                       ...widget.suppliers.map(
-                        (s) => DropdownMenuItem(
-                          value: s.id,
-                          child: Text(s.name),
-                        ),
+                        (s) =>
+                            DropdownMenuItem(value: s.id, child: Text(s.name)),
                       ),
                     ],
                     onChanged: (value) {
                       widget.onChanged(
-                        widget.query.copyWith(
-                          supplierId: value,
-                        ),
+                        widget.query.copyWith(supplierId: value),
                       );
                     },
                   ),
@@ -207,15 +156,11 @@ class _AnimalFiltersState extends State<AnimalFilters> {
                         value: widget.query.includeDeleted,
                         onChanged: (value) {
                           widget.onChanged(
-                            widget.query.copyWith(
-                              includeDeleted: value,
-                            ),
+                            widget.query.copyWith(includeDeleted: value),
                           );
                         },
                       ),
-                      const Text(
-                        'Показывать удалённых',
-                      ),
+                      const Text('Показывать удалённых'),
                     ],
                   ),
               ],

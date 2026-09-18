@@ -35,18 +35,12 @@ import 'state/auth_notifier.dart';
 import 'widgets/adaptive_app_shell.dart';
 import 'widgets/deferred_screen.dart';
 
-GoRouter buildRouter(
-  AuthNotifier auth,
-) {
-  String? requirePermission(
-    AppPermission permission,
-  ) {
+GoRouter buildRouter(AuthNotifier auth) {
+  String? requirePermission(AppPermission permission) {
     return auth.can(permission) ? null : '/forbidden';
   }
 
-  String parseId(
-    GoRouterState state,
-  ) {
+  String parseId(GoRouterState state) {
     return state.pathParameters['id'] ?? '';
   }
 
@@ -54,10 +48,7 @@ GoRouter buildRouter(
     refreshListenable: auth,
     initialLocation: '/',
 
-    redirect: (
-      context,
-      state,
-    ) {
+    redirect: (context, state) {
       final loggedIn = auth.isAuthenticated;
 
       final target = state.matchedLocation;
@@ -65,9 +56,7 @@ GoRouter buildRouter(
       final public = target == '/login' || target == '/register';
 
       if (!loggedIn && !public) {
-        final from = Uri.encodeComponent(
-          state.uri.toString(),
-        );
+        final from = Uri.encodeComponent(state.uri.toString());
 
         return '/login?from=$from';
       }
@@ -86,22 +75,14 @@ GoRouter buildRouter(
 
       GoRoute(
         path: '/login',
-        builder: (
-          context,
-          state,
-        ) {
-          return LoginScreen(
-            from: state.uri.queryParameters['from'],
-          );
+        builder: (context, state) {
+          return LoginScreen(from: state.uri.queryParameters['from']);
         },
       ),
 
       GoRoute(
         path: '/register',
-        builder: (
-          context,
-          state,
-        ) {
+        builder: (context, state) {
           return const RegisterScreen();
         },
       ),
@@ -109,13 +90,8 @@ GoRouter buildRouter(
       // ======================================================
       // AUTHORIZED APPLICATION
       // ======================================================
-
       ShellRoute(
-        builder: (
-          context,
-          state,
-          child,
-        ) {
+        builder: (context, state, child) {
           return AdaptiveAppShell(
             currentLocation: state.uri.path,
             child: child,
@@ -128,10 +104,7 @@ GoRouter buildRouter(
 
           GoRoute(
             path: '/forbidden',
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return const ForbiddenScreen();
             },
           ),
@@ -139,13 +112,9 @@ GoRouter buildRouter(
           // ==================================================
           // HOME
           // ==================================================
-
           GoRoute(
             path: '/',
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return const HomeScreen();
             },
           ),
@@ -153,23 +122,12 @@ GoRouter buildRouter(
           // ==================================================
           // ACCOUNT
           // ==================================================
-
           GoRoute(
             path: '/account',
-            redirect: (
-              context,
-              state,
-            ) {
-              return auth.isUiRole(
-                AppRole.customer,
-              )
-                  ? null
-                  : '/forbidden';
+            redirect: (context, state) {
+              return auth.isUiRole(AppRole.customer) ? null : '/forbidden';
             },
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return const AccountScreen();
             },
           ),
@@ -177,26 +135,16 @@ GoRouter buildRouter(
           // ==================================================
           // MANAGEMENT
           // ==================================================
-
           GoRoute(
             path: '/management',
-            redirect: (
-              context,
-              state,
-            ) {
-              final allowed = auth.isUiRole(
-                    AppRole.manager,
-                  ) ||
-                  auth.isUiRole(
-                    AppRole.admin,
-                  );
+            redirect: (context, state) {
+              final allowed =
+                  auth.isUiRole(AppRole.manager) ||
+                  auth.isUiRole(AppRole.admin);
 
               return allowed ? null : '/forbidden';
             },
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return const ManagementScreen();
             },
           ),
@@ -204,21 +152,12 @@ GoRouter buildRouter(
           // ==================================================
           // ADMIN USERS
           // ==================================================
-
           GoRoute(
             path: '/admin/users',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageUsers,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageUsers);
             },
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return DeferredScreen(
                 loadLibrary: admin_users_screen.loadLibrary,
                 builder: () {
@@ -234,21 +173,12 @@ GoRouter buildRouter(
           // ==================================================
           // ADMIN STATISTICS
           // ==================================================
-
           GoRoute(
             path: '/admin/stats',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.viewStatistics,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.viewStatistics);
             },
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return DeferredScreen(
                 loadLibrary: admin_stats_screen.loadLibrary,
                 builder: () {
@@ -264,175 +194,98 @@ GoRouter buildRouter(
           // ==================================================
           // PRODUCTS
           // ==================================================
-
           GoRoute(
             path: '/products',
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return ProductListScreen(
-                key: ValueKey(
-                  state.uri.toString(),
-                ),
-                initialQuery: ProductQuery.fromUri(
-                  state.uri,
-                ),
+                key: ValueKey(state.uri.toString()),
+                initialQuery: ProductQuery.fromUri(state.uri),
               );
             },
           ),
 
           GoRoute(
             path: '/products/new',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageCatalog,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageCatalog);
             },
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return const ProductFormScreen();
             },
           ),
 
           GoRoute(
             path: '/products/:id/edit',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageCatalog,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageCatalog);
             },
-            builder: (
-              context,
-              state,
-            ) {
-              return ProductFormScreen(
-                id: parseId(state),
-              );
+            builder: (context, state) {
+              return ProductFormScreen(id: parseId(state));
             },
           ),
 
           GoRoute(
             path: '/products/:id',
-            builder: (
-              context,
-              state,
-            ) {
-              return ProductDetailsScreen(
-                id: parseId(state),
-              );
+            builder: (context, state) {
+              return ProductDetailsScreen(id: parseId(state));
             },
           ),
 
           // ==================================================
           // ANIMALS
           // ==================================================
-
           GoRoute(
             path: '/animals',
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return AnimalListScreen(
-                key: ValueKey(
-                  state.uri.toString(),
-                ),
-                initialQuery: AnimalQuery.fromUri(
-                  state.uri,
-                ),
+                key: ValueKey(state.uri.toString()),
+                initialQuery: AnimalQuery.fromUri(state.uri),
               );
             },
           ),
 
           GoRoute(
             path: '/animals/new',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageCatalog,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageCatalog);
             },
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return const AnimalFormScreen();
             },
           ),
 
           GoRoute(
             path: '/animals/:id/edit',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageCatalog,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageCatalog);
             },
-            builder: (
-              context,
-              state,
-            ) {
-              return AnimalFormScreen(
-                id: parseId(state),
-              );
+            builder: (context, state) {
+              return AnimalFormScreen(id: parseId(state));
             },
           ),
 
           GoRoute(
             path: '/animals/:id',
-            builder: (
-              context,
-              state,
-            ) {
-              return AnimalDetailsScreen(
-                id: parseId(state),
-              );
+            builder: (context, state) {
+              return AnimalDetailsScreen(id: parseId(state));
             },
           ),
 
           // ==================================================
           // CATEGORIES
           // ==================================================
-
           GoRoute(
             path: '/categories',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageReferences,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageReferences);
             },
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return CategoryListScreen(
-                key: ValueKey(
-                  state.uri.toString(),
-                ),
+                key: ValueKey(state.uri.toString()),
                 initialQuery: SimpleQuery.fromUri(
                   state.uri,
                   filterParam: 'kind',
-                  allowedSortFields: {
-                    'name',
-                    'kind',
-                    'id',
-                  },
+                  allowedSortFields: {'name', 'kind', 'id'},
                 ),
               );
             },
@@ -440,92 +293,49 @@ GoRouter buildRouter(
 
           GoRoute(
             path: '/categories/new',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageReferences,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageReferences);
             },
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return const CategoryFormScreen();
             },
           ),
 
           GoRoute(
             path: '/categories/:id/edit',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageReferences,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageReferences);
             },
-            builder: (
-              context,
-              state,
-            ) {
-              return CategoryFormScreen(
-                id: parseId(state),
-              );
+            builder: (context, state) {
+              return CategoryFormScreen(id: parseId(state));
             },
           ),
 
           GoRoute(
             path: '/categories/:id',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageReferences,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageReferences);
             },
-            builder: (
-              context,
-              state,
-            ) {
-              return CategoryDetailsScreen(
-                id: parseId(state),
-              );
+            builder: (context, state) {
+              return CategoryDetailsScreen(id: parseId(state));
             },
           ),
 
           // ==================================================
           // SUPPLIERS
           // ==================================================
-
           GoRoute(
             path: '/suppliers',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageReferences,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageReferences);
             },
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return SupplierListScreen(
-                key: ValueKey(
-                  state.uri.toString(),
-                ),
+                key: ValueKey(state.uri.toString()),
                 initialQuery: SimpleQuery.fromUri(
                   state.uri,
                   filterParam: 'country',
-                  allowedSortFields: {
-                    'name',
-                    'country',
-                    'id',
-                  },
+                  allowedSortFields: {'name', 'country', 'id'},
                 ),
               );
             },
@@ -533,92 +343,49 @@ GoRouter buildRouter(
 
           GoRoute(
             path: '/suppliers/new',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageReferences,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageReferences);
             },
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return const SupplierFormScreen();
             },
           ),
 
           GoRoute(
             path: '/suppliers/:id/edit',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageReferences,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageReferences);
             },
-            builder: (
-              context,
-              state,
-            ) {
-              return SupplierFormScreen(
-                id: parseId(state),
-              );
+            builder: (context, state) {
+              return SupplierFormScreen(id: parseId(state));
             },
           ),
 
           GoRoute(
             path: '/suppliers/:id',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageReferences,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageReferences);
             },
-            builder: (
-              context,
-              state,
-            ) {
-              return SupplierDetailsScreen(
-                id: parseId(state),
-              );
+            builder: (context, state) {
+              return SupplierDetailsScreen(id: parseId(state));
             },
           ),
 
           // ==================================================
           // CUSTOMERS
           // ==================================================
-
           GoRoute(
             path: '/customers',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageCustomers,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageCustomers);
             },
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return CustomerListScreen(
-                key: ValueKey(
-                  state.uri.toString(),
-                ),
+                key: ValueKey(state.uri.toString()),
                 initialQuery: SimpleQuery.fromUri(
                   state.uri,
                   filterParam: 'level',
-                  allowedSortFields: {
-                    'lastName',
-                    'email',
-                    'points',
-                  },
+                  allowedSortFields: {'lastName', 'email', 'points'},
                   defaultSort: 'lastName',
                 ),
               );
@@ -627,59 +394,31 @@ GoRouter buildRouter(
 
           GoRoute(
             path: '/customers/new',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageCustomers,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageCustomers);
             },
-            builder: (
-              context,
-              state,
-            ) {
+            builder: (context, state) {
               return const CustomerFormScreen();
             },
           ),
 
           GoRoute(
             path: '/customers/:id/edit',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageCustomers,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageCustomers);
             },
-            builder: (
-              context,
-              state,
-            ) {
-              return CustomerFormScreen(
-                id: parseId(state),
-              );
+            builder: (context, state) {
+              return CustomerFormScreen(id: parseId(state));
             },
           ),
 
           GoRoute(
             path: '/customers/:id',
-            redirect: (
-              context,
-              state,
-            ) {
-              return requirePermission(
-                AppPermission.manageCustomers,
-              );
+            redirect: (context, state) {
+              return requirePermission(AppPermission.manageCustomers);
             },
-            builder: (
-              context,
-              state,
-            ) {
-              return CustomerDetailsScreen(
-                id: parseId(state),
-              );
+            builder: (context, state) {
+              return CustomerDetailsScreen(id: parseId(state));
             },
           ),
         ],
@@ -689,44 +428,23 @@ GoRouter buildRouter(
     // ========================================================
     // 404
     // ========================================================
-
-    errorBuilder: (
-      context,
-      state,
-    ) {
+    errorBuilder: (context, state) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Ошибка 404',
-          ),
-        ),
+        appBar: AppBar(title: const Text('Ошибка 404')),
         body: Center(
           child: Padding(
-            padding: const EdgeInsets.all(
-              24,
-            ),
+            padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  '404',
-                  style: TextStyle(
-                    fontSize: 60,
-                  ),
-                ),
-                const Text(
-                  'Страница не найдена',
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
+                const Text('404', style: TextStyle(fontSize: 60)),
+                const Text('Страница не найдена'),
+                const SizedBox(height: 20),
                 FilledButton(
                   onPressed: () {
                     context.go('/');
                   },
-                  child: const Text(
-                    'На главную',
-                  ),
+                  child: const Text('На главную'),
                 ),
               ],
             ),

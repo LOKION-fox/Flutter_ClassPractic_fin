@@ -11,10 +11,7 @@ import '../widgets/entity_form_scaffold.dart';
 class CustomerFormScreen extends StatefulWidget {
   final String? id;
 
-  const CustomerFormScreen({
-    super.key,
-    this.id,
-  });
+  const CustomerFormScreen({super.key, this.id});
 
   bool get isEditing => id != null;
 
@@ -71,8 +68,8 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
 
     try {
       final customer = await context.read<CustomerListNotifier>().findById(
-            widget.id!,
-          );
+        widget.id!,
+      );
 
       if (!mounted) {
         return;
@@ -108,23 +105,15 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
         _loading = false;
       });
 
-      await messageDialog(
-        context,
-        title: 'Ошибка',
-        message: e.toString(),
-      );
+      await messageDialog(context, title: 'Ошибка', message: e.toString());
     }
   }
 
-  void _changed(
-    String field,
-  ) {
+  void _changed(String field) {
     setState(() {
       _dirty = true;
 
-      _serverErrors.remove(
-        field,
-      );
+      _serverErrors.remove(field);
     });
   }
 
@@ -141,9 +130,7 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
       id: _original?.loyaltyCard.id ?? '',
       number: _cardNumber.text.trim(),
       level: _level!,
-      points: int.parse(
-        _points.text,
-      ),
+      points: int.parse(_points.text),
       issuedAt: _original?.loyaltyCard.issuedAt ?? DateTime.now(),
       deletedAt: _original?.loyaltyCard.deletedAt,
     );
@@ -162,13 +149,9 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
       final notifier = context.read<CustomerListNotifier>();
 
       if (widget.isEditing) {
-        await notifier.update(
-          customer,
-        );
+        await notifier.update(customer);
       } else {
-        await notifier.create(
-          customer,
-        );
+        await notifier.create(customer);
       }
 
       _dirty = false;
@@ -212,20 +195,15 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     if (_loading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return EntityFormScaffold(
-      title:
-          widget.isEditing ? 'Редактирование покупателя' : 'Новый покупатель',
+      title: widget.isEditing
+          ? 'Редактирование покупателя'
+          : 'Новый покупатель',
       formKey: _formKey,
       isDirty: _dirty,
       successLocation: '/customers',
@@ -242,11 +220,7 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
           },
           validator: (value) =>
               _serverErrors['lastName'] ??
-              Validators.requiredAndMax(
-                value,
-                80,
-                field: 'Фамилия',
-              ),
+              Validators.requiredAndMax(value, 80, field: 'Фамилия'),
         ),
         const SizedBox(height: 14),
         TextFormField(
@@ -256,17 +230,11 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
             border: OutlineInputBorder(),
           ),
           onChanged: (_) {
-            _changed(
-              'firstName',
-            );
+            _changed('firstName');
           },
           validator: (value) =>
               _serverErrors['firstName'] ??
-              Validators.requiredAndMax(
-                value,
-                80,
-                field: 'Имя',
-              ),
+              Validators.requiredAndMax(value, 80, field: 'Имя'),
         ),
         const SizedBox(height: 14),
         TextFormField(
@@ -279,10 +247,7 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
             _changed('email');
           },
           validator: (value) =>
-              _serverErrors['email'] ??
-              Validators.email(
-                value,
-              ),
+              _serverErrors['email'] ?? Validators.email(value),
         ),
         const SizedBox(height: 14),
         TextFormField(
@@ -295,17 +260,12 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
             _changed('phone');
           },
           validator: (value) =>
-              _serverErrors['phone'] ??
-              Validators.phone(
-                value,
-              ),
+              _serverErrors['phone'] ?? Validators.phone(value),
         ),
         const SizedBox(height: 24),
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(
-              16,
-            ),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -313,9 +273,7 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
                   'Карта лояльности',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                const SizedBox(
-                  height: 14,
-                ),
+                const SizedBox(height: 14),
                 TextFormField(
                   controller: _cardNumber,
                   decoration: const InputDecoration(
@@ -323,9 +281,7 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
                     border: OutlineInputBorder(),
                   ),
                   onChanged: (_) {
-                    _changed(
-                      'loyaltyCardNumber',
-                    );
+                    _changed('loyaltyCardNumber');
                   },
                   validator: (value) =>
                       _serverErrors['loyaltyCardNumber'] ??
@@ -336,9 +292,7 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
                         field: 'Номер карты',
                       ),
                 ),
-                const SizedBox(
-                  height: 14,
-                ),
+                const SizedBox(height: 14),
                 DropdownButtonFormField<String>(
                   initialValue: _level,
                   decoration: const InputDecoration(
@@ -346,19 +300,11 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
                     border: OutlineInputBorder(),
                   ),
                   items: const [
-                    DropdownMenuItem(
-                      value: 'Silver',
-                      child: Text('Silver'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Gold',
-                      child: Text('Gold'),
-                    ),
+                    DropdownMenuItem(value: 'Silver', child: Text('Silver')),
+                    DropdownMenuItem(value: 'Gold', child: Text('Gold')),
                     DropdownMenuItem(
                       value: 'Platinum',
-                      child: Text(
-                        'Platinum',
-                      ),
+                      child: Text('Platinum'),
                     ),
                   ],
                   validator: (value) =>
@@ -370,15 +316,11 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
                       _level = value;
                       _dirty = true;
 
-                      _serverErrors.remove(
-                        'loyaltyCardLevel',
-                      );
+                      _serverErrors.remove('loyaltyCardLevel');
                     });
                   },
                 ),
-                const SizedBox(
-                  height: 14,
-                ),
+                const SizedBox(height: 14),
                 TextFormField(
                   controller: _points,
                   keyboardType: TextInputType.number,
@@ -387,9 +329,7 @@ class _CustomerFormScreenState extends State<CustomerFormScreen> {
                     border: OutlineInputBorder(),
                   ),
                   onChanged: (_) {
-                    _changed(
-                      'loyaltyCardPoints',
-                    );
+                    _changed('loyaltyCardPoints');
                   },
                   validator: (value) =>
                       _serverErrors['loyaltyCardPoints'] ??

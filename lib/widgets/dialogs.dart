@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 
-Widget _dialogContent(
-  String message,
-) {
+Widget _dialogContent(String message) {
   return ConstrainedBox(
-    constraints: const BoxConstraints(
-      maxWidth: 520,
-    ),
+    constraints: const BoxConstraints(maxWidth: 520),
     child: Text(message),
   );
 }
@@ -24,36 +20,20 @@ Future<bool> confirmDialog(
               horizontal: 24,
               vertical: 24,
             ),
-            title: Text(
-              title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            content: _dialogContent(
-              message,
-            ),
+            title: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
+            content: _dialogContent(message),
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.pop(
-                    context,
-                    false,
-                  );
+                  Navigator.pop(context, false);
                 },
-                child: const Text(
-                  'Отмена',
-                ),
+                child: const Text('Отмена'),
               ),
               FilledButton(
                 onPressed: () {
-                  Navigator.pop(
-                    context,
-                    true,
-                  );
+                  Navigator.pop(context, true);
                 },
-                child: const Text(
-                  'Да',
-                ),
+                child: const Text('Да'),
               ),
             ],
           );
@@ -71,24 +51,13 @@ Future<void> messageDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
-        insetPadding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 24,
-        ),
-        title: Text(
-          title,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        content: _dialogContent(
-          message,
-        ),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+        title: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis),
+        content: _dialogContent(message),
         actions: [
           FilledButton(
             onPressed: () {
-              Navigator.pop(
-                context,
-              );
+              Navigator.pop(context);
             },
             child: const Text('ОК'),
           ),

@@ -58,13 +58,12 @@ class EntityListScaffold<T> extends StatelessWidget {
     this.onCreate,
   });
 
-  Future<void> _delete(
-    BuildContext context,
-  ) async {
+  Future<void> _delete(BuildContext context) async {
     final confirmed = await confirmDialog(
       context,
       title: 'Удаление',
-      message: 'Удалить выбранные записи: '
+      message:
+          'Удалить выбранные записи: '
           '${selected.length}?',
     );
 
@@ -87,41 +86,29 @@ class EntityListScaffold<T> extends StatelessWidget {
     }
   }
 
-  Widget _buildCards(
-    BoxConstraints constraints,
-  ) {
+  Widget _buildCards(BoxConstraints constraints) {
     final oneColumn = constraints.maxWidth < 600;
 
     const gap = 12.0;
 
-    final cardWidth =
-        oneColumn ? constraints.maxWidth : (constraints.maxWidth - gap) / 2;
+    final cardWidth = oneColumn
+        ? constraints.maxWidth
+        : (constraints.maxWidth - gap) / 2;
 
     return Wrap(
       spacing: gap,
       runSpacing: gap,
-      children: items.map(
-        (item) {
-          return SizedBox(
-            width: cardWidth,
-            child: cardBuilder(item),
-          );
-        },
-      ).toList(),
+      children: items.map((item) {
+        return SizedBox(width: cardWidth, child: cardBuilder(item));
+      }).toList(),
     );
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
         leading: IconButton(
           tooltip: 'На главную',
           icon: const Icon(Icons.home),
@@ -139,27 +126,19 @@ class EntityListScaffold<T> extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(
-          16,
-        ),
+        padding: const EdgeInsets.all(16),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 1400,
-            ),
+            constraints: const BoxConstraints(maxWidth: 1400),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 filters,
-                const SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
                 if (selected.isNotEmpty)
                   Card(
                     child: Padding(
-                      padding: const EdgeInsets.all(
-                        12,
-                      ),
+                      padding: const EdgeInsets.all(12),
                       child: Wrap(
                         spacing: 12,
                         runSpacing: 12,
@@ -171,62 +150,36 @@ class EntityListScaffold<T> extends StatelessWidget {
                           ),
                           FilledButton.icon(
                             onPressed: () {
-                              _delete(
-                                context,
-                              );
+                              _delete(context);
                             },
-                            icon: const Icon(
-                              Icons.delete,
-                            ),
-                            label: const Text(
-                              'Удалить выбранные',
-                            ),
+                            icon: const Icon(Icons.delete),
+                            label: const Text('Удалить выбранные'),
                           ),
                         ],
                       ),
                     ),
                   ),
-                if (selected.isNotEmpty)
-                  const SizedBox(
-                    height: 8,
-                  ),
+                if (selected.isNotEmpty) const SizedBox(height: 8),
                 if (status == LoadStatus.idle || status == LoadStatus.loading)
                   const Padding(
-                    key: ValueKey(
-                      'entity-loading',
-                    ),
-                    padding: EdgeInsets.all(
-                      50,
-                    ),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    key: ValueKey('entity-loading'),
+                    padding: EdgeInsets.all(50),
+                    child: Center(child: CircularProgressIndicator()),
                   )
                 else if (status == LoadStatus.error)
                   Card(
-                    key: const ValueKey(
-                      'entity-error',
-                    ),
+                    key: const ValueKey('entity-error'),
                     child: Padding(
-                      padding: const EdgeInsets.all(
-                        30,
-                      ),
+                      padding: const EdgeInsets.all(30),
                       child: Column(
                         children: [
-                          const Icon(
-                            Icons.cloud_off,
-                            size: 60,
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
+                          const Icon(Icons.cloud_off, size: 60),
+                          const SizedBox(height: 16),
                           Text(
                             error ?? 'Неизвестная ошибка',
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(
-                            height: 8,
-                          ),
+                          const SizedBox(height: 8),
                           const Text(
                             'Если сервер был отключён, '
                             'запустите его снова и нажмите '
@@ -234,20 +187,12 @@ class EntityListScaffold<T> extends StatelessWidget {
                             'страницу не нужно.',
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(
-                            height: 16,
-                          ),
+                          const SizedBox(height: 16),
                           FilledButton.icon(
-                            key: const ValueKey(
-                              'entity-retry',
-                            ),
+                            key: const ValueKey('entity-retry'),
                             onPressed: onRetry,
-                            icon: const Icon(
-                              Icons.refresh,
-                            ),
-                            label: const Text(
-                              'Повторить',
-                            ),
+                            icon: const Icon(Icons.refresh),
+                            label: const Text('Повторить'),
                           ),
                         ],
                       ),
@@ -255,22 +200,13 @@ class EntityListScaffold<T> extends StatelessWidget {
                   )
                 else if (items.isEmpty)
                   const Card(
-                    key: ValueKey(
-                      'entity-empty',
-                    ),
+                    key: ValueKey('entity-empty'),
                     child: Padding(
-                      padding: EdgeInsets.all(
-                        40,
-                      ),
+                      padding: EdgeInsets.all(40),
                       child: Column(
                         children: [
-                          Icon(
-                            Icons.search_off,
-                            size: 60,
-                          ),
-                          SizedBox(
-                            height: 16,
-                          ),
+                          Icon(Icons.search_off, size: 60),
+                          SizedBox(height: 16),
                           Text(
                             'По заданным условиям '
                             'ничего не найдено',
@@ -282,25 +218,18 @@ class EntityListScaffold<T> extends StatelessWidget {
                   )
                 else ...[
                   LayoutBuilder(
-                    builder: (
-                      context,
-                      constraints,
-                    ) {
+                    builder: (context, constraints) {
                       // 360 px — одна колонка.
                       // 768 px — две колонки.
                       // 1280 px — таблица.
                       if (constraints.maxWidth < 900) {
-                        return _buildCards(
-                          constraints,
-                        );
+                        return _buildCards(constraints);
                       }
 
                       return table;
                     },
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   Pagination(
                     page: page,
                     totalPages: totalPages,

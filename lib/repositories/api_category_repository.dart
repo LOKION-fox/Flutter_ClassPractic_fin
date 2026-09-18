@@ -47,7 +47,9 @@ class ApiCategoryRepository implements CategoryRepository {
   @override
   Future<PageResult<Category>> find(SimpleQuery query) {
     return _api.run(() async {
-      final result = await _api.pocketBase.collection('categories').getList(
+      final result = await _api.pocketBase
+          .collection('categories')
+          .getList(
             page: query.page,
             perPage: query.size,
             filter: _filter(query),
@@ -55,7 +57,9 @@ class ApiCategoryRepository implements CategoryRepository {
           );
 
       return PageResult<Category>(
-        items: result.items.map((record) => Category.fromJson(record.toJson())).toList(),
+        items: result.items
+            .map((record) => Category.fromJson(record.toJson()))
+            .toList(),
         page: result.page,
         size: result.perPage,
         total: result.totalItems,
@@ -68,8 +72,12 @@ class ApiCategoryRepository implements CategoryRepository {
     if (_cacheIsValid) return [..._cache!];
 
     final result = await _api.run(() async {
-      final records = await _api.pocketBase.collection('categories').getFullList(sort: 'name');
-      return records.map((record) => Category.fromJson(record.toJson())).toList();
+      final records = await _api.pocketBase
+          .collection('categories')
+          .getFullList(sort: 'name');
+      return records
+          .map((record) => Category.fromJson(record.toJson()))
+          .toList();
     });
 
     _cache = result;
@@ -81,7 +89,9 @@ class ApiCategoryRepository implements CategoryRepository {
   Future<Category?> findById(String id) async {
     try {
       return await _api.run(() async {
-        final record = await _api.pocketBase.collection('categories').getOne(id);
+        final record = await _api.pocketBase
+            .collection('categories')
+            .getOne(id);
         return Category.fromJson(record.toJson());
       });
     } on NotFoundException {
@@ -91,61 +101,83 @@ class ApiCategoryRepository implements CategoryRepository {
 
   @override
   Future<Category> create(Category category) {
-    return _auth.authorized(() => _api.run(() async {
-          final record = await _api.pocketBase.collection('categories').create(body: category.toJson());
-          _clearCache();
-          return Category.fromJson(record.toJson());
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        final record = await _api.pocketBase
+            .collection('categories')
+            .create(body: category.toJson());
+        _clearCache();
+        return Category.fromJson(record.toJson());
+      }),
+    );
   }
 
   @override
   Future<void> update(Category category) {
-    return _auth.authorized(() => _api.run(() async {
-          await _api.pocketBase.collection('categories').update(category.id, body: category.toJson());
-          _clearCache();
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        await _api.pocketBase
+            .collection('categories')
+            .update(category.id, body: category.toJson());
+        _clearCache();
+      }),
+    );
   }
 
   @override
   Future<void> softDelete(String id) {
-    return _auth.authorized(() => _api.run(() async {
-          await _api.pocketBase.collection('categories').update(
-            id,
-            body: {'deletedAt': DateTime.now().toUtc().toIso8601String()},
-          );
-          _clearCache();
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        await _api.pocketBase
+            .collection('categories')
+            .update(
+              id,
+              body: {'deletedAt': DateTime.now().toUtc().toIso8601String()},
+            );
+        _clearCache();
+      }),
+    );
   }
 
   @override
   Future<void> hardDelete(String id) {
-    return _auth.authorized(() => _api.run(() async {
-          await _api.pocketBase.collection('categories').delete(id);
-          _clearCache();
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        await _api.pocketBase.collection('categories').delete(id);
+        _clearCache();
+      }),
+    );
   }
 
   @override
   Future<void> restore(String id) {
-    return _auth.authorized(() => _api.run(() async {
-          await _api.pocketBase.collection('categories').update(id, body: {'deletedAt': ''});
-          _clearCache();
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        await _api.pocketBase
+            .collection('categories')
+            .update(id, body: {'deletedAt': ''});
+        _clearCache();
+      }),
+    );
   }
 
   @override
   Future<int> deleteMany(List<String> ids) {
-    return _auth.authorized(() => _api.run(() async {
-          var count = 0;
-          for (final id in ids) {
-            await _api.pocketBase.collection('categories').update(
-              id,
-              body: {'deletedAt': DateTime.now().toUtc().toIso8601String()},
-            );
-            count++;
-          }
-          _clearCache();
-          return count;
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        var count = 0;
+        for (final id in ids) {
+          await _api.pocketBase
+              .collection('categories')
+              .update(
+                id,
+                body: {'deletedAt': DateTime.now().toUtc().toIso8601String()},
+              );
+          count++;
+        }
+        _clearCache();
+        return count;
+      }),
+    );
   }
 }

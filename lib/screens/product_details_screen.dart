@@ -14,14 +14,9 @@ import '../state/supplier_list_notifier.dart';
 class ProductDetailsScreen extends StatelessWidget {
   final String id;
 
-  const ProductDetailsScreen({
-    super.key,
-    required this.id,
-  });
+  const ProductDetailsScreen({super.key, required this.id});
 
-  Future<List<Object?>> _load(
-    BuildContext context,
-  ) async {
+  Future<List<Object?>> _load(BuildContext context) async {
     final productNotifier = context.read<ProductListNotifier>();
 
     final categoryNotifier = context.read<CategoryListNotifier>();
@@ -34,44 +29,28 @@ class ProductDetailsScreen extends StatelessWidget {
 
     final suppliers = await supplierNotifier.getAll();
 
-    return [
-      product,
-      categories,
-      suppliers,
-    ];
+    return [product, categories, suppliers];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Товар'),
-      ),
+      appBar: AppBar(title: const Text('Товар')),
       body: FutureBuilder<List<Object?>>(
         future: _load(context),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'Ошибка загрузки: ${snapshot.error}',
-              ),
-            );
+            return Center(child: Text('Ошибка загрузки: ${snapshot.error}'));
           }
 
           final data = snapshot.data;
 
           if (data == null || data[0] == null) {
-            return const Center(
-              child: Text(
-                'Запись не найдена',
-              ),
-            );
+            return const Center(child: Text('Запись не найдена'));
           }
 
           final product = data[0] as Product;
@@ -90,66 +69,38 @@ class ProductDetailsScreen extends StatelessWidget {
           }
 
           final categoryNames = categories
-              .where(
-                (c) => product.categoryIds.contains(c.id),
-              )
+              .where((c) => product.categoryIds.contains(c.id))
               .map((c) => c.name)
               .join(', ');
 
           final canManage = context.watch<AuthNotifier>().can(
-                AppPermission.manageCatalog,
-              );
+            AppPermission.manageCatalog,
+          );
 
           return ListView(
-            padding: const EdgeInsets.all(
-              24,
-            ),
+            padding: const EdgeInsets.all(24),
             children: [
               Text(
                 product.name,
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
-              const SizedBox(
-                height: 16,
-              ),
-              Text(
-                'Артикул: ${product.article}',
-              ),
-              Text(
-                'Бренд: ${product.brand}',
-              ),
-              Text(
-                'Цена: ${product.price.toStringAsFixed(0)} ₽',
-              ),
-              Text(
-                'Остаток: ${product.stock}',
-              ),
-              Text(
-                'Поставщик: $supplier',
-              ),
-              Text(
-                'Категории: $categoryNames',
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Text(
-                product.description,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 16),
+              Text('Артикул: ${product.article}'),
+              Text('Бренд: ${product.brand}'),
+              Text('Цена: ${product.price.toStringAsFixed(0)} ₽'),
+              Text('Остаток: ${product.stock}'),
+              Text('Поставщик: $supplier'),
+              Text('Категории: $categoryNames'),
+              const SizedBox(height: 16),
+              Text(product.description),
+              const SizedBox(height: 20),
               if (canManage && !product.isDeleted)
                 FilledButton.icon(
                   onPressed: () {
-                    context.push(
-                      '/products/$id/edit',
-                    );
+                    context.push('/products/$id/edit');
                   },
                   icon: const Icon(Icons.edit),
-                  label: const Text(
-                    'Редактировать',
-                  ),
+                  label: const Text('Редактировать'),
                 ),
             ],
           );

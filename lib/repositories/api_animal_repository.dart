@@ -19,7 +19,9 @@ class ApiAnimalRepository implements AnimalRepository {
     if (!query.includeDeleted) parts.add('deletedAt = ""');
 
     if (query.search.trim().isNotEmpty) {
-      parts.add('(name ~ {:search} || breed ~ {:search} || country ~ {:search})');
+      parts.add(
+        '(name ~ {:search} || breed ~ {:search} || country ~ {:search})',
+      );
       params['search'] = query.search.trim();
     }
 
@@ -55,8 +57,12 @@ class ApiAnimalRepository implements AnimalRepository {
   @override
   Future<PageResult<Animal>> find(AnimalQuery query) {
     return _api.run(() async {
-      final sortField = query.sortField == 'age' ? 'ageMonths' : query.sortField;
-      final result = await _api.pocketBase.collection('animals').getList(
+      final sortField = query.sortField == 'age'
+          ? 'ageMonths'
+          : query.sortField;
+      final result = await _api.pocketBase
+          .collection('animals')
+          .getList(
             page: query.page,
             perPage: query.size,
             filter: _filter(query),
@@ -64,7 +70,9 @@ class ApiAnimalRepository implements AnimalRepository {
           );
 
       return PageResult<Animal>(
-        items: result.items.map((record) => Animal.fromJson(record.toJson())).toList(),
+        items: result.items
+            .map((record) => Animal.fromJson(record.toJson()))
+            .toList(),
         page: result.page,
         size: result.perPage,
         total: result.totalItems,
@@ -75,7 +83,9 @@ class ApiAnimalRepository implements AnimalRepository {
   @override
   Future<List<Animal>> all() {
     return _api.run(() async {
-      final records = await _api.pocketBase.collection('animals').getFullList(sort: 'name');
+      final records = await _api.pocketBase
+          .collection('animals')
+          .getFullList(sort: 'name');
       return records.map((record) => Animal.fromJson(record.toJson())).toList();
     });
   }
@@ -94,55 +104,77 @@ class ApiAnimalRepository implements AnimalRepository {
 
   @override
   Future<Animal> create(Animal animal) {
-    return _auth.authorized(() => _api.run(() async {
-          final record = await _api.pocketBase.collection('animals').create(body: animal.toJson());
-          return Animal.fromJson(record.toJson());
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        final record = await _api.pocketBase
+            .collection('animals')
+            .create(body: animal.toJson());
+        return Animal.fromJson(record.toJson());
+      }),
+    );
   }
 
   @override
   Future<void> update(Animal animal) {
-    return _auth.authorized(() => _api.run(() async {
-          await _api.pocketBase.collection('animals').update(animal.id, body: animal.toJson());
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        await _api.pocketBase
+            .collection('animals')
+            .update(animal.id, body: animal.toJson());
+      }),
+    );
   }
 
   @override
   Future<void> softDelete(String id) {
-    return _auth.authorized(() => _api.run(() async {
-          await _api.pocketBase.collection('animals').update(
-            id,
-            body: {'deletedAt': DateTime.now().toUtc().toIso8601String()},
-          );
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        await _api.pocketBase
+            .collection('animals')
+            .update(
+              id,
+              body: {'deletedAt': DateTime.now().toUtc().toIso8601String()},
+            );
+      }),
+    );
   }
 
   @override
   Future<void> hardDelete(String id) {
-    return _auth.authorized(() => _api.run(() async {
-          await _api.pocketBase.collection('animals').delete(id);
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        await _api.pocketBase.collection('animals').delete(id);
+      }),
+    );
   }
 
   @override
   Future<void> restore(String id) {
-    return _auth.authorized(() => _api.run(() async {
-          await _api.pocketBase.collection('animals').update(id, body: {'deletedAt': ''});
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        await _api.pocketBase
+            .collection('animals')
+            .update(id, body: {'deletedAt': ''});
+      }),
+    );
   }
 
   @override
   Future<int> deleteMany(List<String> ids) {
-    return _auth.authorized(() => _api.run(() async {
-          var count = 0;
-          for (final id in ids) {
-            await _api.pocketBase.collection('animals').update(
-              id,
-              body: {'deletedAt': DateTime.now().toUtc().toIso8601String()},
-            );
-            count++;
-          }
-          return count;
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        var count = 0;
+        for (final id in ids) {
+          await _api.pocketBase
+              .collection('animals')
+              .update(
+                id,
+                body: {'deletedAt': DateTime.now().toUtc().toIso8601String()},
+              );
+          count++;
+        }
+        return count;
+      }),
+    );
   }
 }

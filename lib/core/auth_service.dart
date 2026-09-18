@@ -8,7 +8,8 @@ class AuthService {
   AuthService(this.api);
 
   bool get isAuthorized =>
-      api.pocketBase.authStore.isValid && api.pocketBase.authStore.record != null;
+      api.pocketBase.authStore.isValid &&
+      api.pocketBase.authStore.record != null;
 
   String? get token {
     final value = api.pocketBase.authStore.token;
@@ -25,19 +26,14 @@ class AuthService {
     return AppUser.fromJson(record.toJson());
   }
 
-  Future<AppUser> login(
-    String username,
-    String password,
-  ) {
-    return api.run(
-      () async {
-        final result = await api.pocketBase
-            .collection('users')
-            .authWithPassword(username.trim(), password);
+  Future<AppUser> login(String username, String password) {
+    return api.run(() async {
+      final result = await api.pocketBase
+          .collection('users')
+          .authWithPassword(username.trim(), password);
 
-        return AppUser.fromJson(result.record.toJson());
-      },
-    );
+      return AppUser.fromJson(result.record.toJson());
+    });
   }
 
   Future<AppUser> register({
@@ -45,37 +41,33 @@ class AuthService {
     required String fullName,
     required String password,
   }) {
-    return api.run(
-      () async {
-        final record = await api.pocketBase.collection('users').create(
-          body: {
-            'username': username.trim(),
-            'fullName': fullName.trim(),
-            'role': 'customer',
-            'password': password,
-            'passwordConfirm': password,
-          },
-        );
+    return api.run(() async {
+      final record = await api.pocketBase
+          .collection('users')
+          .create(
+            body: {
+              'username': username.trim(),
+              'fullName': fullName.trim(),
+              'role': 'customer',
+              'password': password,
+              'passwordConfirm': password,
+            },
+          );
 
-        return AppUser.fromJson(record.toJson());
-      },
-    );
+      return AppUser.fromJson(record.toJson());
+    });
   }
 
   Future<AppUser> refresh() {
-    return api.run(
-      () async {
-        final result = await api.pocketBase.collection('users').authRefresh();
-        return AppUser.fromJson(result.record.toJson());
-      },
-    );
+    return api.run(() async {
+      final result = await api.pocketBase.collection('users').authRefresh();
+      return AppUser.fromJson(result.record.toJson());
+    });
   }
 
   Future<AppUser> me() async {
     if (!isAuthorized) {
-      throw const UnauthorizedException(
-        'Сессия отсутствует или истекла.',
-      );
+      throw const UnauthorizedException('Сессия отсутствует или истекла.');
     }
 
     return refresh();
@@ -85,9 +77,7 @@ class AuthService {
     api.pocketBase.authStore.clear();
   }
 
-  Future<T> authorized<T>(
-    Future<T> Function() action,
-  ) {
+  Future<T> authorized<T>(Future<T> Function() action) {
     if (!isAuthorized) {
       throw const UnauthorizedException(
         'Для выполнения операции необходимо войти в систему.',

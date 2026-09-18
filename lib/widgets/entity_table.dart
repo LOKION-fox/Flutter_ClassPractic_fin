@@ -73,93 +73,67 @@ class _EntityTableState<T> extends State<EntityTable<T>> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     final sortIndex = widget.columns.indexWhere(
       (column) => column.sortField == widget.sortField,
     );
 
-    final tableHeight = math.min(
-      560.0,
-      72.0 + widget.items.length * 56.0,
-    );
+    final tableHeight = math.min(560.0, 72.0 + widget.items.length * 56.0);
 
     final table = DataTable(
       showCheckboxColumn: widget.selectionEnabled,
       sortColumnIndex: sortIndex == -1 ? null : sortIndex,
       sortAscending: widget.sortAscending,
       columns: [
-        ...widget.columns.map(
-          (column) {
-            return DataColumn(
-              label: Text(
-                column.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              numeric: column.numeric,
-              onSort: column.sortField == null
-                  ? null
-                  : (
-                      index,
-                      ascending,
-                    ) {
-                      widget.onSort(
-                        column.sortField!,
-                      );
-                    },
-            );
-          },
-        ),
-        const DataColumn(
-          label: Text('Действия'),
-        ),
+        ...widget.columns.map((column) {
+          return DataColumn(
+            label: Text(
+              column.label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            numeric: column.numeric,
+            onSort: column.sortField == null
+                ? null
+                : (index, ascending) {
+                    widget.onSort(column.sortField!);
+                  },
+          );
+        }),
+        const DataColumn(label: Text('Действия')),
       ],
-      rows: widget.items.map(
-        (item) {
-          final id = widget.idOf(item);
+      rows: widget.items.map((item) {
+        final id = widget.idOf(item);
 
-          return DataRow(
-            selected: widget.selectionEnabled && widget.selected.contains(id),
-            onSelectChanged: widget.selectionEnabled
-                ? (_) {
-                    widget.onToggleSelect(
-                      id,
-                    );
-                  }
-                : null,
-            cells: [
-              ...widget.columns.map(
-                (column) {
-                  return DataCell(
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxWidth: 260,
-                      ),
-                      child: DefaultTextStyle.merge(
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        child: column.build(
-                          item,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              DataCell(
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: widget.actions(
-                    item,
+        return DataRow(
+          selected: widget.selectionEnabled && widget.selected.contains(id),
+          onSelectChanged: widget.selectionEnabled
+              ? (_) {
+                  widget.onToggleSelect(id);
+                }
+              : null,
+          cells: [
+            ...widget.columns.map((column) {
+              return DataCell(
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 260),
+                  child: DefaultTextStyle.merge(
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    child: column.build(item),
                   ),
                 ),
+              );
+            }),
+            DataCell(
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: widget.actions(item),
               ),
-            ],
-          );
-        },
-      ).toList(),
+            ),
+          ],
+        );
+      }).toList(),
     );
 
     return SizedBox(

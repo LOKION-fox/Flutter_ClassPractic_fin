@@ -56,31 +56,19 @@ class SimpleQuery {
 
     var sortField = sort.first;
 
-    if (!allowedSortFields.contains(
-      sortField,
-    )) {
+    if (!allowedSortFields.contains(sortField)) {
       sortField = defaultSort;
     }
 
-    var page = int.tryParse(
-          query['page'] ?? '',
-        ) ??
-        1;
+    var page = int.tryParse(query['page'] ?? '') ?? 1;
 
     if (page < 1) {
       page = 1;
     }
 
-    var size = int.tryParse(
-          query['size'] ?? '',
-        ) ??
-        10;
+    var size = int.tryParse(query['size'] ?? '') ?? 10;
 
-    if (![
-      10,
-      25,
-      50,
-    ].contains(size)) {
+    if (![10, 25, 50].contains(size)) {
       size = 10;
     }
 
@@ -95,9 +83,7 @@ class SimpleQuery {
     );
   }
 
-  Map<String, dynamic> toApiQueryParameters({
-    required String filterParam,
-  }) {
+  Map<String, dynamic> toApiQueryParameters({required String filterParam}) {
     final result = <String, dynamic>{
       'sort': '$sortField,${sortAscending ? 'asc' : 'desc'}',
       'page': page,
@@ -119,10 +105,7 @@ class SimpleQuery {
     return result;
   }
 
-  String toLocation(
-    String path, {
-    required String filterParam,
-  }) {
+  String toLocation(String path, {required String filterParam}) {
     final params = <String, String>{};
 
     if (search.trim().isNotEmpty) {
@@ -143,16 +126,11 @@ class SimpleQuery {
       params['deleted'] = '1';
     }
 
-    return Uri(
-      path: path,
-      queryParameters: params,
-    ).toString();
+    return Uri(path: path, queryParameters: params).toString();
   }
 
   @override
-  bool operator ==(
-    Object other,
-  ) {
+  bool operator ==(Object other) {
     return other is SimpleQuery &&
         other.search == search &&
         other.filter == filter &&
@@ -165,12 +143,12 @@ class SimpleQuery {
 
   @override
   int get hashCode => Object.hash(
-        search,
-        filter,
-        sortField,
-        sortAscending,
-        page,
-        size,
-        includeDeleted,
-      );
+    search,
+    filter,
+    sortField,
+    sortAscending,
+    page,
+    size,
+    includeDeleted,
+  );
 }

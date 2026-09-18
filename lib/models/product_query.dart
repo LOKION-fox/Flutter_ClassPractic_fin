@@ -39,10 +39,12 @@ class ProductQuery {
   }) {
     return ProductQuery(
       search: search ?? this.search,
-      categoryId:
-          categoryId == _unset ? this.categoryId : categoryId as String?,
-      supplierId:
-          supplierId == _unset ? this.supplierId : supplierId as String?,
+      categoryId: categoryId == _unset
+          ? this.categoryId
+          : categoryId as String?,
+      supplierId: supplierId == _unset
+          ? this.supplierId
+          : supplierId as String?,
       priceFrom: priceFrom == _unset ? this.priceFrom : priceFrom as double?,
       priceTo: priceTo == _unset ? this.priceTo : priceTo as double?,
       sortField: sortField ?? this.sortField,
@@ -120,15 +122,15 @@ class ProductQuery {
 
   @override
   int get hashCode => Object.hash(
-        search,
-        categoryId,
-        supplierId,
-        priceFrom,
-        priceTo,
-        sortField,
-        sortAscending,
-        page,
-        size,
-        includeDeleted,
-      );
+    search,
+    categoryId,
+    supplierId,
+    priceFrom,
+    priceTo,
+    sortField,
+    sortAscending,
+    page,
+    size,
+    includeDeleted,
+  );
 }

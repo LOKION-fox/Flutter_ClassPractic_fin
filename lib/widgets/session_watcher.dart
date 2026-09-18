@@ -10,11 +10,7 @@ class SessionWatcher extends StatefulWidget {
   final AuthNotifier auth;
   final Widget child;
 
-  const SessionWatcher({
-    super.key,
-    required this.auth,
-    required this.child,
-  });
+  const SessionWatcher({super.key, required this.auth, required this.child});
 
   @override
   State<SessionWatcher> createState() => _SessionWatcherState();
@@ -31,18 +27,12 @@ class _SessionWatcherState extends State<SessionWatcher> {
 
     HardwareKeyboard.instance.addHandler(_onKey);
 
-    widget.auth.addListener(
-      _onAuthChanged,
-    );
+    widget.auth.addListener(_onAuthChanged);
 
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _syncTimers(),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) => _syncTimers());
   }
 
-  bool _onKey(
-    KeyEvent event,
-  ) {
+  bool _onKey(KeyEvent event) {
     _activity();
 
     return false;
@@ -79,13 +69,9 @@ class _SessionWatcherState extends State<SessionWatcher> {
     _warningTimer?.cancel();
     _logoutTimer?.cancel();
 
-    const timeout = Duration(
-      seconds: ApiConfig.inactivitySeconds,
-    );
+    const timeout = Duration(seconds: ApiConfig.inactivitySeconds);
 
-    const warning = Duration(
-      seconds: ApiConfig.warningSeconds,
-    );
+    const warning = Duration(seconds: ApiConfig.warningSeconds);
 
     final last = widget.auth.lastActivityAt ?? DateTime.now();
 
@@ -103,15 +89,9 @@ class _SessionWatcherState extends State<SessionWatcher> {
       warningDelay = Duration.zero;
     }
 
-    _warningTimer = Timer(
-      warningDelay,
-      _showWarning,
-    );
+    _warningTimer = Timer(warningDelay, _showWarning);
 
-    _logoutTimer = Timer(
-      remaining,
-      _logoutInactive,
-    );
+    _logoutTimer = Timer(remaining, _logoutInactive);
   }
 
   void _scheduleAbsolute() {
@@ -123,23 +103,15 @@ class _SessionWatcherState extends State<SessionWatcher> {
       return;
     }
 
-    const maxDuration = Duration(
-      seconds: ApiConfig.maxSessionSeconds,
-    );
+    const maxDuration = Duration(seconds: ApiConfig.maxSessionSeconds);
 
-    var remaining = maxDuration -
-        DateTime.now().difference(
-          started,
-        );
+    var remaining = maxDuration - DateTime.now().difference(started);
 
     if (remaining.isNegative) {
       remaining = Duration.zero;
     }
 
-    _absoluteTimer = Timer(
-      remaining,
-      _logoutAbsolute,
-    );
+    _absoluteTimer = Timer(remaining, _logoutAbsolute);
   }
 
   void _showWarning() {
@@ -149,9 +121,7 @@ class _SessionWatcherState extends State<SessionWatcher> {
 
     ScaffoldMessenger.maybeOf(context)?.showSnackBar(
       const SnackBar(
-        duration: Duration(
-          seconds: ApiConfig.warningSeconds,
-        ),
+        duration: Duration(seconds: ApiConfig.warningSeconds),
         content: Text(
           'Сессия завершится через 30 секунд '
           'из-за отсутствия активности.',
@@ -167,9 +137,7 @@ class _SessionWatcherState extends State<SessionWatcher> {
   }
 
   Future<void> _logoutAbsolute() async {
-    await widget.auth.forceLogout(
-      'Завершено максимальное время сессии.',
-    );
+    await widget.auth.forceLogout('Завершено максимальное время сессии.');
   }
 
   void _cancelTimers() {
@@ -182,9 +150,7 @@ class _SessionWatcherState extends State<SessionWatcher> {
   void dispose() {
     HardwareKeyboard.instance.removeHandler(_onKey);
 
-    widget.auth.removeListener(
-      _onAuthChanged,
-    );
+    widget.auth.removeListener(_onAuthChanged);
 
     _cancelTimers();
 
@@ -192,9 +158,7 @@ class _SessionWatcherState extends State<SessionWatcher> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return Listener(
       behavior: HitTestBehavior.translucent,
       onPointerDown: (_) {

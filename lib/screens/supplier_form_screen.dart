@@ -14,10 +14,7 @@ import '../widgets/multi_select_field.dart';
 class SupplierFormScreen extends StatefulWidget {
   final String? id;
 
-  const SupplierFormScreen({
-    super.key,
-    this.id,
-  });
+  const SupplierFormScreen({super.key, this.id});
 
   bool get isEditing => id != null;
 
@@ -67,9 +64,7 @@ class _SupplierFormScreenState extends State<SupplierFormScreen> {
       Supplier? supplier;
 
       if (widget.id != null) {
-        supplier = await supplierNotifier.findById(
-          widget.id!,
-        );
+        supplier = await supplierNotifier.findById(widget.id!);
       }
 
       if (!mounted) {
@@ -87,9 +82,7 @@ class _SupplierFormScreenState extends State<SupplierFormScreen> {
 
           _email.text = supplier.email;
 
-          _allowedIds = [
-            ...supplier.allowedCategoryIds,
-          ];
+          _allowedIds = [...supplier.allowedCategoryIds];
         }
 
         _loading = false;
@@ -103,23 +96,15 @@ class _SupplierFormScreenState extends State<SupplierFormScreen> {
         _loading = false;
       });
 
-      await messageDialog(
-        context,
-        title: 'Ошибка',
-        message: e.toString(),
-      );
+      await messageDialog(context, title: 'Ошибка', message: e.toString());
     }
   }
 
-  void _changed(
-    String field,
-  ) {
+  void _changed(String field) {
     setState(() {
       _dirty = true;
 
-      _serverErrors.remove(
-        field,
-      );
+      _serverErrors.remove(field);
     });
   }
 
@@ -137,9 +122,7 @@ class _SupplierFormScreenState extends State<SupplierFormScreen> {
       name: _name.text.trim(),
       country: _country.text.trim(),
       email: _email.text.trim(),
-      allowedCategoryIds: [
-        ..._allowedIds,
-      ],
+      allowedCategoryIds: [..._allowedIds],
       deletedAt: _original?.deletedAt,
     );
 
@@ -147,13 +130,9 @@ class _SupplierFormScreenState extends State<SupplierFormScreen> {
       final notifier = context.read<SupplierListNotifier>();
 
       if (widget.isEditing) {
-        await notifier.update(
-          supplier,
-        );
+        await notifier.update(supplier);
       } else {
-        await notifier.create(
-          supplier,
-        );
+        await notifier.create(supplier);
       }
 
       _dirty = false;
@@ -194,15 +173,9 @@ class _SupplierFormScreenState extends State<SupplierFormScreen> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     if (_loading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return EntityFormScaffold(
@@ -223,11 +196,7 @@ class _SupplierFormScreenState extends State<SupplierFormScreen> {
           },
           validator: (value) =>
               _serverErrors['name'] ??
-              Validators.requiredAndMax(
-                value,
-                100,
-                field: 'Название',
-              ),
+              Validators.requiredAndMax(value, 100, field: 'Название'),
         ),
         const SizedBox(height: 14),
         TextFormField(
@@ -241,11 +210,7 @@ class _SupplierFormScreenState extends State<SupplierFormScreen> {
           },
           validator: (value) =>
               _serverErrors['country'] ??
-              Validators.requiredAndMax(
-                value,
-                60,
-                field: 'Страна',
-              ),
+              Validators.requiredAndMax(value, 60, field: 'Страна'),
         ),
         const SizedBox(height: 14),
         TextFormField(
@@ -258,10 +223,7 @@ class _SupplierFormScreenState extends State<SupplierFormScreen> {
             _changed('email');
           },
           validator: (value) =>
-              _serverErrors['email'] ??
-              Validators.email(
-                value,
-              ),
+              _serverErrors['email'] ?? Validators.email(value),
         ),
         const SizedBox(height: 14),
         MultiSelectField<Category>(
@@ -272,17 +234,12 @@ class _SupplierFormScreenState extends State<SupplierFormScreen> {
           labelOf: (item) => item.name,
           validator: (value) =>
               _serverErrors['allowedCategoryIds'] ??
-              Validators.requiredIds(
-                value,
-                field: 'категории',
-              ),
+              Validators.requiredIds(value, field: 'категории'),
           onChanged: (value) {
             setState(() {
               _allowedIds = value;
 
-              _serverErrors.remove(
-                'allowedCategoryIds',
-              );
+              _serverErrors.remove('allowedCategoryIds');
 
               _dirty = true;
             });

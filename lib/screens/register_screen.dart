@@ -6,9 +6,7 @@ import '../core/api_exceptions.dart';
 import '../state/auth_notifier.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({
-    super.key,
-  });
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -31,24 +29,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool get _lengthOk => _password.text.length >= 8;
 
-  bool get _digitOk => RegExp(
-        r'[0-9]',
-      ).hasMatch(
-        _password.text,
-      );
+  bool get _digitOk => RegExp(r'[0-9]').hasMatch(_password.text);
 
-  bool get _specialOk => RegExp(
-        r'[^A-Za-zА-Яа-яЁё0-9]',
-      ).hasMatch(
-        _password.text,
-      );
+  bool get _specialOk =>
+      RegExp(r'[^A-Za-zА-Яа-яЁё0-9]').hasMatch(_password.text);
 
   bool get _passwordOk => _lengthOk && _digitOk && _specialOk;
 
-  Widget _requirement(
-    String text,
-    bool ok,
-  ) {
+  Widget _requirement(String text, bool ok) {
     return Row(
       children: [
         Icon(
@@ -56,9 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           size: 18,
           color: ok ? Colors.green : Colors.red,
         ),
-        const SizedBox(
-          width: 6,
-        ),
+        const SizedBox(width: 6),
         Text(text),
       ],
     );
@@ -83,10 +69,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       await context.read<AuthNotifier>().register(
-            username: _username.text.trim(),
-            fullName: _fullName.text.trim(),
-            password: _password.text,
-          );
+        username: _username.text.trim(),
+        fullName: _fullName.text.trim(),
+        password: _password.text,
+      );
 
       if (!mounted) {
         return;
@@ -104,13 +90,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         return;
       }
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(
-        SnackBar(
-          content: Text(e.message),
-        ),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.message)));
     } finally {
       if (mounted) {
         setState(() {
@@ -131,22 +112,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Регистрация'),
-      ),
+      appBar: AppBar(title: const Text('Регистрация')),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(
-            24,
-          ),
+          padding: const EdgeInsets.all(24),
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 480,
-            ),
+            constraints: const BoxConstraints(maxWidth: 480),
             child: Form(
               key: _formKey,
               child: Column(
@@ -160,9 +133,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     onChanged: (_) {
                       setState(() {
-                        _serverErrors.remove(
-                          'username',
-                        );
+                        _serverErrors.remove('username');
                       });
                     },
                     validator: (value) {
@@ -177,9 +148,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(
-                    height: 14,
-                  ),
+                  const SizedBox(height: 14),
                   TextFormField(
                     controller: _fullName,
                     decoration: const InputDecoration(
@@ -188,9 +157,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     onChanged: (_) {
                       setState(() {
-                        _serverErrors.remove(
-                          'fullName',
-                        );
+                        _serverErrors.remove('fullName');
                       });
                     },
                     validator: (value) {
@@ -209,9 +176,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(
-                    height: 14,
-                  ),
+                  const SizedBox(height: 14),
                   TextFormField(
                     controller: _password,
                     obscureText: true,
@@ -221,9 +186,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     onChanged: (_) {
                       setState(() {
-                        _serverErrors.remove(
-                          'password',
-                        );
+                        _serverErrors.remove('password');
                       });
                     },
                     validator: (value) {
@@ -242,24 +205,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  _requirement(
-                    'Не менее 8 символов',
-                    _lengthOk,
-                  ),
-                  _requirement(
-                    'Есть цифра',
-                    _digitOk,
-                  ),
-                  _requirement(
-                    'Есть специальный символ',
-                    _specialOk,
-                  ),
-                  const SizedBox(
-                    height: 14,
-                  ),
+                  const SizedBox(height: 10),
+                  _requirement('Не менее 8 символов', _lengthOk),
+                  _requirement('Есть цифра', _digitOk),
+                  _requirement('Есть специальный символ', _specialOk),
+                  const SizedBox(height: 14),
                   TextFormField(
                     controller: _confirm,
                     obscureText: true,
@@ -275,9 +225,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   FilledButton(
                     onPressed: _loading ? null : _register,
                     child: Text(
@@ -286,13 +234,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   TextButton(
                     onPressed: () {
-                      context.go(
-                        '/login',
-                      );
+                      context.go('/login');
                     },
-                    child: const Text(
-                      'Уже есть аккаунт',
-                    ),
+                    child: const Text('Уже есть аккаунт'),
                   ),
                 ],
               ),

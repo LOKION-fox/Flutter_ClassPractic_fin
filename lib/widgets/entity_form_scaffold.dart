@@ -64,9 +64,7 @@ class _EntityFormScaffoldState extends State<EntityFormScaffold> {
     if (context.canPop()) {
       context.pop();
     } else {
-      context.go(
-        widget.successLocation,
-      );
+      context.go(widget.successLocation);
     }
   }
 
@@ -91,20 +89,14 @@ class _EntityFormScaffoldState extends State<EntityFormScaffold> {
           _allowPop = true;
         });
 
-        context.go(
-          widget.successLocation,
-        );
+        context.go(widget.successLocation);
       }
     } catch (e) {
       if (!mounted) {
         return;
       }
 
-      await messageDialog(
-        context,
-        title: 'Ошибка',
-        message: e.toString(),
-      );
+      await messageDialog(context, title: 'Ошибка', message: e.toString());
     } finally {
       if (mounted) {
         setState(() {
@@ -115,15 +107,10 @@ class _EntityFormScaffoldState extends State<EntityFormScaffold> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return PopScope(
       canPop: _allowPop || !widget.isDirty,
-      onPopInvokedWithResult: (
-        didPop,
-        result,
-      ) async {
+      onPopInvokedWithResult: (didPop, result) async {
         if (didPop || _allowPop || !widget.isDirty) {
           return;
         }
@@ -141,35 +128,23 @@ class _EntityFormScaffoldState extends State<EntityFormScaffold> {
         if (context.canPop()) {
           context.pop();
         } else {
-          context.go(
-            widget.successLocation,
-          );
+          context.go(widget.successLocation);
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            widget.title,
-          ),
-        ),
+        appBar: AppBar(title: Text(widget.title)),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(
-            24,
-          ),
+          padding: const EdgeInsets.all(24),
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: 750,
-              ),
+              constraints: const BoxConstraints(maxWidth: 750),
               child: Form(
                 key: widget.formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     ...widget.children,
-                    const SizedBox(
-                      height: 24,
-                    ),
+                    const SizedBox(height: 24),
                     Wrap(
                       spacing: 12,
                       runSpacing: 12,
@@ -182,9 +157,7 @@ class _EntityFormScaffoldState extends State<EntityFormScaffold> {
                         ),
                         OutlinedButton(
                           onPressed: _saving ? null : _cancel,
-                          child: const Text(
-                            'Отмена',
-                          ),
+                          child: const Text('Отмена'),
                         ),
                       ],
                     ),

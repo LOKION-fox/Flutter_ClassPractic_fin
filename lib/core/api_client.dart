@@ -5,13 +5,8 @@ import 'api_exceptions.dart';
 class ApiClient {
   final PocketBase pocketBase;
 
-  ApiClient({
-    required String baseUrl,
-    required AsyncAuthStore authStore,
-  }) : pocketBase = PocketBase(
-          _normalizeBaseUrl(baseUrl),
-          authStore: authStore,
-        );
+  ApiClient({required String baseUrl, required AsyncAuthStore authStore})
+    : pocketBase = PocketBase(_normalizeBaseUrl(baseUrl), authStore: authStore);
 
   static String _normalizeBaseUrl(String value) {
     var result = value.trim();
@@ -23,16 +18,11 @@ class ApiClient {
     return result;
   }
 
-  String filter(
-    String expression,
-    Map<String, dynamic> params,
-  ) {
+  String filter(String expression, Map<String, dynamic> params) {
     return pocketBase.filter(expression, params);
   }
 
-  Future<T> run<T>(
-    Future<T> Function() action,
-  ) async {
+  Future<T> run<T>(Future<T> Function() action) async {
     try {
       return await action();
     } on ClientException catch (error) {
@@ -48,9 +38,7 @@ class ApiClient {
     }
   }
 
-  ApiException _mapException(
-    ClientException error,
-  ) {
+  ApiException _mapException(ClientException error) {
     final status = error.statusCode;
     final response = error.response;
 
@@ -82,10 +70,7 @@ class ApiClient {
       }
 
       if (errors.isNotEmpty) {
-        return ValidationException(
-          message,
-          errors,
-        );
+        return ValidationException(message, errors);
       }
 
       return BadRequestException(message);

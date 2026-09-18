@@ -16,10 +16,7 @@ import '../widgets/multi_select_field.dart';
 class ProductFormScreen extends StatefulWidget {
   final String? id;
 
-  const ProductFormScreen({
-    super.key,
-    this.id,
-  });
+  const ProductFormScreen({super.key, this.id});
 
   bool get isEditing => id != null;
 
@@ -85,9 +82,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       Product? product;
 
       if (widget.id != null) {
-        product = await productNotifier.findById(
-          widget.id!,
-        );
+        product = await productNotifier.findById(widget.id!);
       }
 
       if (!mounted) {
@@ -115,9 +110,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
 
           _supplierId = product.supplierId;
 
-          _categoryIds = [
-            ...product.categoryIds,
-          ];
+          _categoryIds = [...product.categoryIds];
         }
 
         _loading = false;
@@ -135,15 +128,11 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
     }
   }
 
-  void _changed(
-    String field,
-  ) {
+  void _changed(String field) {
     setState(() {
       _dirty = true;
 
-      _serverErrors.remove(
-        field,
-      );
+      _serverErrors.remove(field);
     });
   }
 
@@ -164,17 +153,11 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       return [];
     }
 
-    return _categories.where(
-      (category) {
-        final correctKind =
-            category.kind == 'product' || category.kind == 'both';
+    return _categories.where((category) {
+      final correctKind = category.kind == 'product' || category.kind == 'both';
 
-        return correctKind &&
-            supplier.allowedCategoryIds.contains(
-              category.id,
-            );
-      },
-    ).toList();
+      return correctKind && supplier.allowedCategoryIds.contains(category.id);
+    }).toList();
   }
 
   Future<bool> _save() async {
@@ -191,16 +174,10 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       name: _name.text.trim(),
       article: _article.text.trim(),
       brand: _brand.text.trim(),
-      price: double.parse(
-        _price.text.replaceAll(',', '.'),
-      ),
-      stock: int.parse(
-        _stock.text,
-      ),
+      price: double.parse(_price.text.replaceAll(',', '.')),
+      stock: int.parse(_stock.text),
       supplierId: _supplierId!,
-      categoryIds: [
-        ..._categoryIds,
-      ],
+      categoryIds: [..._categoryIds],
       description: _description.text.trim(),
       deletedAt: _original?.deletedAt,
     );
@@ -209,13 +186,9 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
       final notifier = context.read<ProductListNotifier>();
 
       if (widget.isEditing) {
-        await notifier.update(
-          product,
-        );
+        await notifier.update(product);
       } else {
-        await notifier.create(
-          product,
-        );
+        await notifier.create(product);
       }
 
       _dirty = false;
@@ -259,40 +232,20 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     if (_loading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (_loadError != null) {
       return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Ошибка',
-          ),
-        ),
-        body: Center(
-          child: Text(
-            _loadError!,
-          ),
-        ),
+        appBar: AppBar(title: const Text('Ошибка')),
+        body: Center(child: Text(_loadError!)),
       );
     }
 
     if (widget.isEditing && _original == null) {
-      return const Scaffold(
-        body: Center(
-          child: Text(
-            'Товар не найден',
-          ),
-        ),
-      );
+      return const Scaffold(body: Center(child: Text('Товар не найден')));
     }
 
     return EntityFormScaffold(
@@ -314,11 +267,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           },
           validator: (value) {
             return _serverErrors['name'] ??
-                Validators.requiredAndMax(
-                  value,
-                  100,
-                  field: 'Название',
-                );
+                Validators.requiredAndMax(value, 100, field: 'Название');
           },
         ),
         const SizedBox(height: 14),
@@ -333,11 +282,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           },
           validator: (value) {
             return _serverErrors['article'] ??
-                Validators.requiredAndMax(
-                  value,
-                  30,
-                  field: 'Артикул',
-                );
+                Validators.requiredAndMax(value, 30, field: 'Артикул');
           },
         ),
         const SizedBox(height: 14),
@@ -352,11 +297,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           },
           validator: (value) {
             return _serverErrors['brand'] ??
-                Validators.requiredAndMax(
-                  value,
-                  60,
-                  field: 'Бренд',
-                );
+                Validators.requiredAndMax(value, 60, field: 'Бренд');
           },
         ),
         const SizedBox(height: 14),
@@ -367,42 +308,29 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
             labelText: 'Поставщик',
             border: OutlineInputBorder(),
           ),
-          items: _suppliers.map(
-            (supplier) {
-              return DropdownMenuItem<String>(
-                value: supplier.id,
-                child: Text(
-                  supplier.name,
-                ),
-              );
-            },
-          ).toList(),
+          items: _suppliers.map((supplier) {
+            return DropdownMenuItem<String>(
+              value: supplier.id,
+              child: Text(supplier.name),
+            );
+          }).toList(),
           validator: (value) {
             return _serverErrors['supplierId'] ??
-                Validators.requiredId(
-                  value,
-                  field: 'поставщика',
-                );
+                Validators.requiredId(value, field: 'поставщика');
           },
           onChanged: (value) {
             setState(() {
               _supplierId = value;
 
-              _serverErrors.remove(
-                'supplierId',
-              );
+              _serverErrors.remove('supplierId');
 
-              _serverErrors.remove(
-                'categoryIds',
-              );
+              _serverErrors.remove('categoryIds');
 
               final supplier = _supplier;
 
               if (supplier != null) {
                 _categoryIds = _categoryIds
-                    .where(
-                      supplier.allowedCategoryIds.contains,
-                    )
+                    .where(supplier.allowedCategoryIds.contains)
                     .toList();
               }
 
@@ -419,18 +347,13 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
           labelOf: (category) => category.name,
           validator: (value) {
             return _serverErrors['categoryIds'] ??
-                Validators.requiredIds(
-                  value,
-                  field: 'категории',
-                );
+                Validators.requiredIds(value, field: 'категории');
           },
           onChanged: (value) {
             setState(() {
               _categoryIds = value;
 
-              _serverErrors.remove(
-                'categoryIds',
-              );
+              _serverErrors.remove('categoryIds');
 
               _dirty = true;
             });
@@ -487,16 +410,10 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
             border: OutlineInputBorder(),
           ),
           onChanged: (_) {
-            _changed(
-              'description',
-            );
+            _changed('description');
           },
           validator: (value) {
-            return Validators.requiredAndMax(
-              value,
-              500,
-              field: 'Описание',
-            );
+            return Validators.requiredAndMax(value, 500, field: 'Описание');
           },
         ),
       ],

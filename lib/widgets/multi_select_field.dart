@@ -29,9 +29,7 @@ class MultiSelectField<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormField<List<String>>(
-      key: ValueKey(
-        '$label-${selectedIds.join('-')}-${items.length}',
-      ),
+      key: ValueKey('$label-${selectedIds.join('-')}-${items.length}'),
       initialValue: selectedIds,
       validator: validator,
       builder: (field) {
@@ -53,9 +51,7 @@ class MultiSelectField<T> extends StatelessWidget {
                 label: Text(labelOf(item)),
                 selected: selected,
                 onSelected: (_) {
-                  final next = List<String>.from(
-                    field.value ?? [],
-                  );
+                  final next = List<String>.from(field.value ?? []);
 
                   if (selected) {
                     next.remove(id);

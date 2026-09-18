@@ -21,7 +21,9 @@ class ApiProductRepository implements ProductRepository {
     }
 
     if (query.search.trim().isNotEmpty) {
-      parts.add('(name ~ {:search} || article ~ {:search} || brand ~ {:search})');
+      parts.add(
+        '(name ~ {:search} || article ~ {:search} || brand ~ {:search})',
+      );
       params['search'] = query.search.trim();
     }
 
@@ -52,7 +54,9 @@ class ApiProductRepository implements ProductRepository {
   @override
   Future<PageResult<Product>> find(ProductQuery query) {
     return _api.run(() async {
-      final result = await _api.pocketBase.collection('products').getList(
+      final result = await _api.pocketBase
+          .collection('products')
+          .getList(
             page: query.page,
             perPage: query.size,
             filter: _filter(query),
@@ -60,7 +64,9 @@ class ApiProductRepository implements ProductRepository {
           );
 
       return PageResult<Product>(
-        items: result.items.map((record) => Product.fromJson(record.toJson())).toList(),
+        items: result.items
+            .map((record) => Product.fromJson(record.toJson()))
+            .toList(),
         page: result.page,
         size: result.perPage,
         total: result.totalItems,
@@ -71,8 +77,12 @@ class ApiProductRepository implements ProductRepository {
   @override
   Future<List<Product>> all() {
     return _api.run(() async {
-      final records = await _api.pocketBase.collection('products').getFullList(sort: 'name');
-      return records.map((record) => Product.fromJson(record.toJson())).toList();
+      final records = await _api.pocketBase
+          .collection('products')
+          .getFullList(sort: 'name');
+      return records
+          .map((record) => Product.fromJson(record.toJson()))
+          .toList();
     });
   }
 
@@ -90,55 +100,77 @@ class ApiProductRepository implements ProductRepository {
 
   @override
   Future<Product> create(Product product) {
-    return _auth.authorized(() => _api.run(() async {
-          final record = await _api.pocketBase.collection('products').create(body: product.toJson());
-          return Product.fromJson(record.toJson());
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        final record = await _api.pocketBase
+            .collection('products')
+            .create(body: product.toJson());
+        return Product.fromJson(record.toJson());
+      }),
+    );
   }
 
   @override
   Future<void> update(Product product) {
-    return _auth.authorized(() => _api.run(() async {
-          await _api.pocketBase.collection('products').update(product.id, body: product.toJson());
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        await _api.pocketBase
+            .collection('products')
+            .update(product.id, body: product.toJson());
+      }),
+    );
   }
 
   @override
   Future<void> softDelete(String id) {
-    return _auth.authorized(() => _api.run(() async {
-          await _api.pocketBase.collection('products').update(
-            id,
-            body: {'deletedAt': DateTime.now().toUtc().toIso8601String()},
-          );
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        await _api.pocketBase
+            .collection('products')
+            .update(
+              id,
+              body: {'deletedAt': DateTime.now().toUtc().toIso8601String()},
+            );
+      }),
+    );
   }
 
   @override
   Future<void> hardDelete(String id) {
-    return _auth.authorized(() => _api.run(() async {
-          await _api.pocketBase.collection('products').delete(id);
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        await _api.pocketBase.collection('products').delete(id);
+      }),
+    );
   }
 
   @override
   Future<void> restore(String id) {
-    return _auth.authorized(() => _api.run(() async {
-          await _api.pocketBase.collection('products').update(id, body: {'deletedAt': ''});
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        await _api.pocketBase
+            .collection('products')
+            .update(id, body: {'deletedAt': ''});
+      }),
+    );
   }
 
   @override
   Future<int> deleteMany(List<String> ids) {
-    return _auth.authorized(() => _api.run(() async {
-          var count = 0;
-          for (final id in ids) {
-            await _api.pocketBase.collection('products').update(
-              id,
-              body: {'deletedAt': DateTime.now().toUtc().toIso8601String()},
-            );
-            count++;
-          }
-          return count;
-        }));
+    return _auth.authorized(
+      () => _api.run(() async {
+        var count = 0;
+        for (final id in ids) {
+          await _api.pocketBase
+              .collection('products')
+              .update(
+                id,
+                body: {'deletedAt': DateTime.now().toUtc().toIso8601String()},
+              );
+          count++;
+        }
+        return count;
+      }),
+    );
   }
 }

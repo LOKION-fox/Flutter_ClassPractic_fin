@@ -10,9 +10,7 @@ import 'load_status.dart';
 class ProductListNotifier extends ChangeNotifier {
   final ProductRepository _repository;
 
-  ProductListNotifier(
-    this._repository,
-  );
+  ProductListNotifier(this._repository);
 
   ProductQuery _query = const ProductQuery();
 
@@ -41,9 +39,7 @@ class ProductListNotifier extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _result = await _repository.find(
-        _query,
-      );
+      _result = await _repository.find(_query);
 
       _status = LoadStatus.success;
     } on RequestCancelledException {
@@ -60,9 +56,7 @@ class ProductListNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> applyQuery(
-    ProductQuery query,
-  ) async {
+  Future<void> applyQuery(ProductQuery query) async {
     _query = query;
     _selected.clear();
 
@@ -79,9 +73,7 @@ class ProductListNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Product?> findById(
-    String id,
-  ) {
+  Future<Product?> findById(String id) {
     return _repository.findById(id);
   }
 
@@ -89,31 +81,21 @@ class ProductListNotifier extends ChangeNotifier {
     return _repository.all();
   }
 
-  Future<Product> create(
-    Product product,
-  ) async {
-    final created = await _repository.create(
-      product,
-    );
+  Future<Product> create(Product product) async {
+    final created = await _repository.create(product);
 
     await load();
 
     return created;
   }
 
-  Future<void> update(
-    Product product,
-  ) async {
-    await _repository.update(
-      product,
-    );
+  Future<void> update(Product product) async {
+    await _repository.update(product);
 
     await load();
   }
 
-  Future<void> softDelete(
-    String id,
-  ) async {
+  Future<void> softDelete(String id) async {
     await _repository.softDelete(id);
 
     _selected.remove(id);
@@ -121,9 +103,7 @@ class ProductListNotifier extends ChangeNotifier {
     await load();
   }
 
-  Future<void> hardDelete(
-    String id,
-  ) async {
+  Future<void> hardDelete(String id) async {
     await _repository.hardDelete(id);
 
     _selected.remove(id);
@@ -131,18 +111,14 @@ class ProductListNotifier extends ChangeNotifier {
     await load();
   }
 
-  Future<void> restore(
-    String id,
-  ) async {
+  Future<void> restore(String id) async {
     await _repository.restore(id);
 
     await load();
   }
 
   Future<void> deleteSelected() async {
-    await _repository.deleteMany(
-      _selected.toList(),
-    );
+    await _repository.deleteMany(_selected.toList());
 
     _selected.clear();
 

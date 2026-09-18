@@ -1,8 +1,5 @@
 class Validators {
-  static String? requiredText(
-    String? value, {
-    String field = 'Поле',
-  }) {
+  static String? requiredText(String? value, {String field = 'Поле'}) {
     if (value == null || value.trim().isEmpty) {
       return '$field обязательно для заполнения';
     }
@@ -10,11 +7,7 @@ class Validators {
     return null;
   }
 
-  static String? maxLength(
-    String? value,
-    int max, {
-    String field = 'Поле',
-  }) {
+  static String? maxLength(String? value, int max, {String field = 'Поле'}) {
     if (value != null && value.trim().length > max) {
       return '$field: максимум $max символов';
     }
@@ -27,20 +20,13 @@ class Validators {
     int max, {
     String field = 'Поле',
   }) {
-    final required = requiredText(
-      value,
-      field: field,
-    );
+    final required = requiredText(value, field: field);
 
     if (required != null) {
       return required;
     }
 
-    return maxLength(
-      value,
-      max,
-      field: field,
-    );
+    return maxLength(value, max, field: field);
   }
 
   static String? numberRange(
@@ -49,18 +35,13 @@ class Validators {
     required double max,
     required String field,
   }) {
-    final required = requiredText(
-      value,
-      field: field,
-    );
+    final required = requiredText(value, field: field);
 
     if (required != null) {
       return required;
     }
 
-    final number = double.tryParse(
-      value!.trim().replaceAll(',', '.'),
-    );
+    final number = double.tryParse(value!.trim().replaceAll(',', '.'));
 
     if (number == null) {
       return '$field должно быть числом';
@@ -79,18 +60,13 @@ class Validators {
     required int max,
     required String field,
   }) {
-    final required = requiredText(
-      value,
-      field: field,
-    );
+    final required = requiredText(value, field: field);
 
     if (required != null) {
       return required;
     }
 
-    final number = int.tryParse(
-      value!.trim(),
-    );
+    final number = int.tryParse(value!.trim());
 
     if (number == null) {
       return '$field должно быть целым числом';
@@ -103,60 +79,39 @@ class Validators {
     return null;
   }
 
-  static String? email(
-    String? value,
-  ) {
-    final required = requiredText(
-      value,
-      field: 'Email',
-    );
+  static String? email(String? value) {
+    final required = requiredText(value, field: 'Email');
 
     if (required != null) {
       return required;
     }
 
-    final regex = RegExp(
-      r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
-    );
+    final regex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
 
-    if (!regex.hasMatch(
-      value!.trim(),
-    )) {
+    if (!regex.hasMatch(value!.trim())) {
       return 'Введите корректный email';
     }
 
     return null;
   }
 
-  static String? phone(
-    String? value,
-  ) {
-    final required = requiredText(
-      value,
-      field: 'Телефон',
-    );
+  static String? phone(String? value) {
+    final required = requiredText(value, field: 'Телефон');
 
     if (required != null) {
       return required;
     }
 
-    final regex = RegExp(
-      r'^\+?[0-9]{10,15}$',
-    );
+    final regex = RegExp(r'^\+?[0-9]{10,15}$');
 
-    if (!regex.hasMatch(
-      value!.trim(),
-    )) {
+    if (!regex.hasMatch(value!.trim())) {
       return 'Введите корректный телефон';
     }
 
     return null;
   }
 
-  static String? requiredId(
-    String? value, {
-    required String field,
-  }) {
+  static String? requiredId(String? value, {required String field}) {
     if (value == null || value.trim().isEmpty) {
       return 'Выберите $field';
     }
@@ -164,10 +119,7 @@ class Validators {
     return null;
   }
 
-  static String? requiredIds(
-    List<String>? value, {
-    required String field,
-  }) {
+  static String? requiredIds(List<String>? value, {required String field}) {
     if (value == null || value.isEmpty) {
       return 'Выберите хотя бы один вариант: $field';
     }

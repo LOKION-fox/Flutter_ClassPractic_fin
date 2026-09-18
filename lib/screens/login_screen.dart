@@ -8,10 +8,7 @@ import '../state/auth_notifier.dart';
 class LoginScreen extends StatefulWidget {
   final String? from;
 
-  const LoginScreen({
-    super.key,
-    this.from,
-  });
+  const LoginScreen({super.key, this.from});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -40,9 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       await context.read<AuthNotifier>().login(
-            _username.text.trim(),
-            _password.text,
-          );
+        _username.text.trim(),
+        _password.text,
+      );
 
       if (!mounted) {
         return;
@@ -79,9 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     final auth = context.watch<AuthNotifier>();
 
     final notice = auth.notice;
@@ -89,18 +84,12 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(
-            24,
-          ),
+          padding: const EdgeInsets.all(24),
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: 430,
-            ),
+            constraints: const BoxConstraints(maxWidth: 430),
             child: Card(
               child: Padding(
-                padding: const EdgeInsets.all(
-                  24,
-                ),
+                padding: const EdgeInsets.all(24),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -108,45 +97,31 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text(
                         'Вход',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.headlineMedium,
+                        style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       if (notice != null) ...[
-                        const SizedBox(
-                          height: 16,
-                        ),
+                        const SizedBox(height: 16),
                         Container(
-                          padding: const EdgeInsets.all(
-                            12,
-                          ),
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.secondaryContainer,
-                            borderRadius: BorderRadius.circular(
-                              8,
-                            ),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .secondaryContainer,
+                            borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(notice),
                         ),
                       ],
                       if (_error != null) ...[
-                        const SizedBox(
-                          height: 16,
-                        ),
+                        const SizedBox(height: 16),
                         Text(
                           _error!,
                           style: TextStyle(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.error,
+                            color: Theme.of(context).colorScheme.error,
                           ),
                         ),
                       ],
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      const SizedBox(height: 20),
                       TextFormField(
                         controller: _username,
                         decoration: const InputDecoration(
@@ -161,9 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(
-                        height: 14,
-                      ),
+                      const SizedBox(height: 14),
                       TextFormField(
                         controller: _password,
                         obscureText: true,
@@ -180,29 +153,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         onFieldSubmitted: (_) => _login(),
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      const SizedBox(height: 20),
                       FilledButton(
                         onPressed: _loading ? null : _login,
-                        child: Text(
-                          _loading ? 'Вход...' : 'Войти',
-                        ),
+                        child: Text(_loading ? 'Вход...' : 'Войти'),
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10),
                       TextButton(
                         onPressed: _loading
                             ? null
                             : () {
-                                context.go(
-                                  '/register',
-                                );
+                                context.go('/register');
                               },
-                        child: const Text(
-                          'Регистрация',
-                        ),
+                        child: const Text('Регистрация'),
                       ),
                       const Divider(),
                     ],
