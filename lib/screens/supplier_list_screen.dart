@@ -199,7 +199,7 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
             build: (supplier) {
               return Text(
                 supplier.id,
-              );;
+              );
             },
           ),
         ],
