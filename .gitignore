@@ -50,5 +50,6 @@ app.*.map.json
 # PocketBase runtime data/binaries must not be committed.
 pb_data/
 **/pb_data/
-pocketbase
 pocketbase.exe
+**/pocketbase.exe
+/pocketbase/pocketbase
